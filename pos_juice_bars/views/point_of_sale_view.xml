@@ -1,0 +1,17 @@
+<openerp>
+	<data>
+        <!-- Adding Miscellaneous field for Miscellaneous variants in product.product -->
+        <record id="pos_order_tree_view" model="ir.ui.view">
+            <field name="name">product.product</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+            <field name="arch" type="xml">
+				<field name = "session_id" position ="after">
+					<field name = "note"/>
+                    <field name = "total_discount_given" />
+                    <field name = "discount_percentage" />
+				</field>
+            </field>
+        </record>
+	</data>
+</openerp>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="JuiceBarListWidget">
+        <div class="product-list-scroller touch-scrollable">
+            <div class="product-list">
+            </div>
+        </div>
+        <span class="placeholder-ScrollbarWidget" />
+    </t>
+
+    <t t-name="JuiceBar">
+        <span class='product' t-att-data-product-id="product.id">
+            <div class="product-img">
+                <img t-att-src='image_url' />
+                <t t-if="!product.to_weight">
+                    <span class="price-tag">
+                        <t t-esc="widget.format_currency(product.price,'Product Price')"/>
+                    </span>
+                </t>
+                <t t-if="product.to_weight">
+                    <span class="price-tag">
+                        <t t-esc="widget.format_currency(product.price,'Product Price')+'/'+widget.pos.units_by_id[product.uom_id[0]].name"/>
+                    </span>
+                </t>
+            </div>
+            <div class="product-name">
+                <t t-esc="product.display_name"/>
+            </div>
+        </span>
+    </t>
+
+    <t t-name = "PopUpSummary">
+        <div>
+            <table class="table table-hover">
+                <caption style="text-align:center !important ;" ></caption>
+                <tbody>
+                    <tr t-foreach="summary" t-as="line">
+                        <td >
+                            <t t-esc="line.name" />
+                        </td>
+                        <td  >
+                            <t t-if="summary.length > 1">
+                                <t t-esc="line.qty" /> / <t t-esc="total_length" />
+                            </t>
+                        </td>
+
+                        <td  id = "reduce" t-att-data-product-id = "line.id" style="cursor:pointer;">
+                            x
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class = "button" >Submit</button>
+        </div>
+    </t>
+
+    <t t-name="JuiceBarMixPopupWidget">
+        <script type = "text/javascript" src="/pos_juice_bars/static/src/lib/bootstrap3.7.min.js"></script>
+        <div class="modal-dialog" style="margin:0px !important;">
+            <div class="popup popup-alert" style="height:100% !important;width:100% !important;" >
+                <p class="title"><t t-esc=" widget.options.title || 'Alert' " /></p>
+                <p class="body"><t t-esc=" widget.options.body || '' "/>
+                    <div class="container">
+                            <h2><t t-esc="widget.juice_bar_id.display_name" /></h2>
+                            <t t-if="widget.conc_ids">
+                                <div style = "width:70%;float:left;border:0px solid black;">
+                                    <ul class="nav nav-tabs" style = "border-bottom:0px solid black !important ;" >
+                                        <t t-foreach="widget.conc_ids" t-as="conc_id">
+                                            <t t-if="conc_id_index == 0 ">
+                                                <li class="active" ><a data-toggle="tab" t-attf-href="#_{{ conc_id }}"><t t-esc="widget.pos.attribute_values.get(conc_id).get('name')" /></a></li>
+                                            </t>
+                                            <t t-if="conc_id_index != 0 ">
+                                                <li><a data-toggle="tab" t-attf-href="#_{{ conc_id }}"><t t-esc="widget.pos.attribute_values.get(conc_id).get('name')" /></a></li>
+                                            </t>
+                                        </t>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <t t-foreach="widget.conc_ids" t-as="conc_id">
+                                            <t t-if="conc_id_index == 0 ">
+                                                <div t-attf-id="_{{ conc_id }}" class="tab-pane fade in active">
+                                                </div>
+                                            </t>
+                                            <t t-if="conc_id_index != 0 ">
+                                                <div t-attf-id="_{{ conc_id }}" class="tab-pane fade">
+                                                </div>
+                                            </t>
+                                        </t>
+                                  </div>
+                                </div>
+                                <div style = "width:30%;float:right;border:0px solid black;" id = "summary">
+                                </div>
+                            </t>
+                    </div>
+                </p>
+                <div class="footer">
+                    <div class="button cancel">
+                        Ok
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

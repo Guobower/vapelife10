@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+	<t t-name="InventoryPopUp">
+        <div class="modal-dialog" style="margin:0px !important;">
+            <div class="popup popup-alert" style="height:100% !important;width:100% !important;" >
+                <p class="title"><t t-esc=" 'Inventory' " /></p>
+                <div class = "container">
+                		<table class="table table-hover table-bordered css-serial">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Name</th>
+								<th>Tab Name</th>
+								<th>Required Qty</th>
+								<th>Available Qty</th>
+							</tr>
+						</thead>
+						<tbody>
+		                		<t t-foreach="widget.inventory_lines" t-as="line">
+		                			<tr>
+		                				<td class="payment_plan_rows col-md-2"></td>
+		                				<td><span><t t-esc="line.display_name"/></span></td>
+		                				<td><span><t t-esc="line.tab_name"/></span></td>
+		                				<td class = "info" ><span><t t-esc="line.required_qty"/></span></td>
+		                				<td class = "danger" ><span><t t-esc="line.available_qty"/></span></td>
+		                			</tr>
+		                		</t>							
+						</tbody>                		
+                		</table>
+                </div>
+                <div class="footer">
+                    <div class="button cancel">
+                        Ok
+                    </div>
+                </div>                
+            </div>
+         </div>	
+	</t>
+
+    <t t-name="add_wholesalepos_button">
+        <div class='control-button'>
+            <i class='fa fa-cart-plus' /> Wholesale
+        </div>
+    </t>
+    
+    <t t-name = "Many2OneSelection" >
+	    <select class='detail client-address-country needsclick text-center' name='country_id'>
+	        <option value=''>None</option>
+	        <t t-foreach='models' t-as='model'>
+	            <option t-att-value="model.get('id')"> 
+	                <t t-esc="model.get('name')"/>
+	            </option>
+	        </t>
+	    </select>
+    </t>
+    
+    <t t-name = "PaymentPlans">
+		<td colspan="4" >
+			<table class = "table table-hover table-condensed css-serial">
+				<caption class='text-center' ><h3>Payment Plans</h3></caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Payment Method</th>
+						<th>Amount</th>
+						<th>Date</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</td>    
+    </t>
+    
+    <t t-name="WholeSalePosWidget">
+    		<div>
+	        <!-- Tabs -->
+	        <div name = "tabs">
+	            <ul class="nav nav-tabs" style = "border-bottom:0px solid black !important ;" >
+	                <t t-foreach="widget.pos.product_tabs.models" t-as="tab">
+	                    <t t-if="tab_index == 0 ">
+	                        <li class="active" ><a data-toggle="tab" t-attf-href="#_{{ tab.get('id') }}"><t t-esc="tab.get('name')" /></a></li>
+	                    </t>
+	                    <t t-if="tab_index != 0 ">
+	                        <li><a data-toggle="tab" t-attf-href="#_{{ tab.get('id') }}"><t t-esc="tab.get('name')" /></a></li>
+	                    </t>
+	                </t>
+	            </ul>
+	            <div class="tab-content">
+	                <t t-foreach="widget.pos.product_tabs.models" t-as="tab">
+	                    <t t-if="tab_index == 0 ">
+	                        <div t-attf-id="_{{ tab.get('id') }}" class="tab-pane fade in active">
+	                        </div>
+	                    </t>
+	                    <t t-if="tab_index != 0 ">
+	                        <div t-attf-id="_{{ tab.get('id') }}" class="tab-pane fade">
+	                        </div>
+	                    </t>
+	                </t>
+	            </div>
+	        </div>
+	        <!-- Final Summary Table -->
+	        <div name = "summary">
+        			<div id="order_notes" ></div>
+	        		<table class="table table-hover table-stripped">
+	        			<tbody>
+	        				<tr class="info">
+	        					<td>Subtotal</td>
+	        					<td id = "subtotal" ></td>	        					
+	        					<td>Total Units</td>
+	        					<td id = "total_units" ></td>
+	        				</tr>
+	        				<tr>
+        						<td>S &amp; H ($)</td>
+        						<td id="shipping_handling"></td>
+        						<td>Paid</td>
+        						<td id="paid" ></td>
+	        				</tr>
+	        				<tr>
+        						<td>Discount Percentage</td>
+        						<td id="discount_percentage"></td>
+        						<td>Balance</td>
+        						<td id = "balance" ></td>
+	        				</tr>	        				
+	        				<tr>
+        						<td>Discount($)</td>
+        						<td id="discount"></td>
+        						<td>Payment Method</td>
+        						<td id = "payment_method" ></td>
+	        				</tr>	        					        				
+	        				<tr>
+        						<td>Net Total</td>
+        						<td id="net_total"></td>	        				
+        						<td></td>
+        						<td></td>
+	        				</tr>	
+	        				<tr id = "payment_plans">
+
+	        				</tr>        					        					        				
+	        			</tbody>
+	        		</table>
+	        </div>
+        </div>
+    </t>
+    <t t-name="WholeSalePosScreen">
+        <div class="clientlist-screen screen">
+            <div class="screen-content">
+                <section class="top-content">
+                    <span class='button back'>
+                        <i class='fa fa-angle-double-left'></i>
+                        Cancel
+                    </span>
+                    <span class='button next highlight'>
+                        Confirm Order
+                        <i class='fa fa-angle-double-right'></i>
+                    </span>                    
+                </section>
+                <section class="full-content">
+                    <div class='window'>
+                        <section class='subwindow collapsed'>
+                            <div class='subwindow-container collapsed'>
+                                <div class='subwindow-container-fix client-details-contents'>
+                                </div>
+                            </div>
+                        </section>
+                        <section class='subwindow'>
+                            <div class='subwindow-container'>
+                                <div class='subwindow-container-fix touch-scrollable scrollable-y'>
+
+
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </t>
+</templates>

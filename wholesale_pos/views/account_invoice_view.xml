@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id = "account_invoice_payment_plans" model = "ir.ui.view">
+        <field name="name">payment.plans</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form" />
+        <field name="arch" type="xml">
+            <xpath expr = "/form/sheet/notebook" position = "inside" >
+            		<page string = "Payment Plans">
+            			<field name = "payment_plan_ids" nolabel = "1" context = "{'default_partner_id':partner_id}"/>
+            		</page>
+            </xpath>
+        </field>
+    </record>	
+</odoo>

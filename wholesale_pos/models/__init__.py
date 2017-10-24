@@ -1,0 +1,6 @@
+import product_tab
+import product
+import payment_plan
+import pos_session
+import account_invoice
+import account_payment

@@ -1,0 +1,14 @@
+input:focus{
+	border:1px solid #4c4c4c;	
+}
+
+.css-serial {
+  counter-reset: serial-number;  /* Set the serial number counter to 0 */
+}
+
+.css-serial td.payment_plan_rows:first-child:before {
+  width:20px;
+  counter-increment: serial-number;  /* Increment the serial number counter */
+  content: counter(serial-number);  /* Display the counter */
+}
+

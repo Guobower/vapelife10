@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id = "volume_attribute" model = "product.attribute">
+            <field name = "name">Volume</field>
+            <field name = "sequence" eval="0" />
+            <field name = "nature">vol</field>
+        </record>
+        <record id = "nicotine_attribute" model = "product.attribute">
+            <field name = "name">Concentration</field>
+            <field name = "sequence" eval="1" />
+            <field name = "nature">conc</field>
+        </record>
+        <record id = "flavor_attribute" model = "product.attribute">
+            <field name = "name">Flavor</field>
+            <field name = "sequence" eval="2" />
+            <field name = "nature">flav</field>
+        </record>
+    </data>
+</odoo>

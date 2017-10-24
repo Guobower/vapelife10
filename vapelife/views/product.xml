@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id = "product_category_product_attribute" model = "ir.ui.view">
+        <field name="name">product.category</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr = "/form/sheet" position = "inside" >
+                <group col="4" string = "Product Attribute" name = "product_attribute">
+                    <field name = "attribute_id" />
+                    <field name = "attribute_value_id" widget="selection" attrs = "{'required':[('attribute_id','!=',False)]}" domain = "[('attribute_id','=',attribute_id)]"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

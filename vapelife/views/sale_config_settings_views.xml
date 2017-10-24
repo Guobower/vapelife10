@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id = "sale_config_settings_vapelife" model = "ir.ui.view">
+        <field name="name">sale.config.settings</field>
+        <field name="model">sale.config.settings</field>
+        <field name="inherit_id" ref="sale.view_sales_config" />
+        <field name="arch" type="xml">
+            <field name='deposit_product_id_setting' position = "after">
+                <field name = "shipping_product_id"  class = "oe_inline"/>
+            </field>
+        </field>
+    </record>
+</odoo>

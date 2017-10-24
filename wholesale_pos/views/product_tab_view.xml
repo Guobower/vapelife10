@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id = "product_tab_tree" model = "ir.ui.view">
+        <field name = "name">Product Tab Tree View</field>
+        <field name = "model">product.tab</field>
+        <field name = "arch" type="xml">
+            <tree string = "Product Tabs">
+                <field name="sequence" widget="handle"/>
+                <field name = "name" />
+                <field name = "active" />
+                <field name = "visible_all_customers" />
+                <field name = "specific_customer_ids" />
+            </tree>
+        </field>
+    </record>
+
+    <record id = "product_tab_view_form" model = "ir.ui.view">
+        <field name="name">product.tab</field>
+        <field name="model">product.tab</field>
+        <field name="arch" type="xml">
+            <form string = "Product Tab">
+                <sheet>
+                    <div class="oe_title oe_left">
+                        <div class="oe_edit_only">
+                            <label for="name"/>
+                            <field name="visible_all_customers"  class="oe_inline"/> <label for="visible_all_customers" string="Visible to all"/>
+                            <field name="active"  class="oe_inline"/> <label for="active" string="Active"/>
+                        </div>
+                        <h1>
+                            <field name="name" default_focus="1" placeholder="Name"/>
+                        </h1>
+                    </div>
+                    <div class="oe_right oe_button_box" name="buttons"> </div>
+                    <group>
+                        <group>
+                            <field name = "tab_style"  />
+                            <field name="specific_customer_ids" widget="many2many_tags"  domain="[('customer', '=', True)]" attrs="{'invisible': [('visible_all_customers','=', True)]}"  />
+                            <field name = "vol_id" widget="selection" attrs = "{'invisible':[('tab_style','not in',[1,5])],'required':[('tab_style','in',[1,5])]}" />
+                            <field name = "consumable_stockable" />
+                            <field name = "sequence" />
+                            <field name = "uom_id" />
+                        </group>
+                        <group>
+                            <field name = "flavor_conc_line" attrs = "{'invisible':[('tab_style','not in',[1,5])]}" nolabel="1">
+                                <tree string  = "Flavour Concentration Details" editable = "bottom" >
+                                    <field name = "flavor_id"/>
+                                    <field name = "conc_ids" create="False" widget = "many2many_tags" />
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string = "Products">
+                            <field name = "product_ids" nolabel="1" >
+                                <tree string = "Products">
+                                    <field name = "name"/>
+                                    <field name = "attribute_value_ids"/>
+                                    <field name = "categ_id" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+     <record id = "action_product_tab_view" model="ir.actions.act_window">
+        <field name="name">Product Tab</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.tab</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+    </record>
+
+    <menuitem action="action_product_tab_view"
+            id="menu_action_product_tab_view" groups = "sales_team.group_sale_manager"
+            parent="sales_team.menu_sale_config" sequence="0" />
+
+</odoo>

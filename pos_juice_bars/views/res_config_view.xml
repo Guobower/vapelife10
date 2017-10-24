@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id = "pos_config_settings_vapelife" model = "ir.ui.view">
+        <field name="name">pos.config.settings</field>
+        <field name="model">pos.config.settings</field>
+        <field name="inherit_id" ref="point_of_sale.view_sale_config_settings_form_pos" />
+        <field name="arch" type="xml">
+            <xpath expr = "/form" position = "inside" >
+                <group string = "Vapelife Juice Bars Wizard">
+                    <group>
+                        <field name = "juicebar_volume_id"  class="oe_inline" domain = "[('attribute_id','=',%(vapelife.volume_attribute)d)]"/>
+                        <field name = "juicebar_concentration_ids" widget = "many2many_tags" options="{'no_create': True,'no_quick_create':True,'no_create_edit': True}"/>
+                    </group>
+                    <group>
+                        <field name = "juice_bars_ids" widget = "many2many_tags" options="{'no_create': True,'no_quick_create':True,'no_create_edit': True}" />
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
