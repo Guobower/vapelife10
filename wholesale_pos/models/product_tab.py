@@ -161,11 +161,11 @@ class product_tab(models.Model):
         self.write({
             'product_ids':[(4,x,False) for x in list(set(product_ids))]
         })
-        self.assign_categories()
+        self.assign_categories(attribute_vol_id)
         return product_ids
     
     @api.model
-    def assign_categories(self):
+    def assign_categories(self,attribute_vol_id):
         # Do it only if the tab style is flavor concentration matrix
         if self.tab_style == 1:
             categ = self.env['product.category'].search([('attribute_value_id','=',self.vol_id.id)])
