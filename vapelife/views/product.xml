@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
-    <record id = "product_category_product_attribute" model = "ir.ui.view">
+<!--     <record id = "product_category_product_attribute" model = "ir.ui.view">
         <field name="name">product.category</field>
         <field name="model">product.category</field>
         <field name="inherit_id" ref="product.product_category_form_view" />
@@ -12,5 +12,5 @@
                 </group>
             </xpath>
         </field>
-    </record>
+    </record> -->
 </odoo>

@@ -21,7 +21,7 @@ pos_juice_bars
 ==============
 
 -   Setup Juice Bar Volume, Juice Bars, Juice Bar Mixture Concentrations in  the POS settings
-
+-	While setting up Juice Bars, UOM -> Units and add product attribute value for the volume (Very Important)
 
 
    # vapelife10

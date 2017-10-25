@@ -89,6 +89,8 @@ class product_tab(models.Model):
 
     @api.model
     def _create_product(self,pairs):
+        if not self.product_category_id:
+            raise ValidationError("Product Category Required")
         #(flavor_id,vol_id,conc_id) ---> pair
         product_obj = self.env['product.product']
         template_obj = self.env['product.template']
@@ -98,27 +100,29 @@ class product_tab(models.Model):
         attribute_vol_id = self.env['product.attribute'].search([('nature','=','vol')],limit=1).id
         for pair in pairs:
             # Check if such product already exists. If yes then do not create. Just add it to Many2many field of the tab
-            self.env.cr.execute('''
-                select distinct(a.product_product_id) from product_attribute_value_product_product_rel as a
-                left join product_attribute_value_product_product_rel as b on a.product_product_id = b.product_product_id
-                left join product_attribute_value_product_product_rel as c on b.product_product_id = c.product_product_id
-                left join product_product as p on a.product_product_id = p.id
-                where a.product_attribute_value_id = %s and b.product_attribute_value_id = %s and c.product_attribute_value_id = %s
-                and p.active = True
-            '''%(pair[0].id,pair[1].id,pair[2].id))
-            products = self.env.cr.fetchall()
-            if products:
-                product_ids = product_ids + [x[0] for x in products]
-                continue
-            # Check if a template exist which has same flavor, volume . If yes then just add new concentration to it.
+            # Skipping it as of now because it does not suit the multi brand model
+#             self.env.cr.execute('''
+#                 select distinct(a.product_product_id) from product_attribute_value_product_product_rel as a
+#                 left join product_attribute_value_product_product_rel as b on a.product_product_id = b.product_product_id
+#                 left join product_attribute_value_product_product_rel as c on b.product_product_id = c.product_product_id
+#                 left join product_product as p on a.product_product_id = p.id
+#                 where a.product_attribute_value_id = %s and b.product_attribute_value_id = %s and c.product_attribute_value_id = %s
+#                 and p.active = True
+#             '''%(pair[0].id,pair[1].id,pair[2].id))
+#             products = self.env.cr.fetchall()
+#             if products:
+#                 product_ids = product_ids + [x[0] for x in products]
+#                 continue
+            # Check if a template exist which has same flavor, volume in the same tab . If yes then just add new concentration to it.
             # For the purpose first check if a product exists with same config and then find its template
             self.env.cr.execute('''
                 select distinct(t.id) from product_attribute_value_product_product_rel as a
                 left join product_attribute_value_product_product_rel as b on a.product_product_id = b.product_product_id
                 left join product_product as p on a.product_product_id = p.id
                 left join product_template as t on p.product_tmpl_id = t.id
-                where a.product_attribute_value_id = %s and b.product_attribute_value_id = %s and t.active = True
-            '''%(pair[0].id,pair[1].id))
+                left join product_tab_product_product as ptpp on ptpp.product_id = p.id
+                where a.product_attribute_value_id = %s and b.product_attribute_value_id = %s and t.active = True and ptpp.tab_id = %s
+            '''%(pair[0].id,pair[1].id,self.id))
             product_templates = self.env.cr.fetchall()
             if product_templates:
                 product_templates = map(lambda x:x[0],product_templates)
@@ -161,25 +165,9 @@ class product_tab(models.Model):
         self.write({
             'product_ids':[(4,x,False) for x in list(set(product_ids))]
         })
-        self.assign_categories(attribute_vol_id)
+        self.product_ids.write({'categ_id':self.product_category_id.id})
         return product_ids
     
-    @api.model
-    def assign_categories(self,attribute_vol_id):
-        # Do it only if the tab style is flavor concentration matrix
-        if self.tab_style == 1:
-            categ = self.env['product.category'].search([('attribute_value_id','=',self.vol_id.id)])
-            if not categ:
-                parent_id = self.env.ref('product.product_category_1')
-                categ = self.env['product.category'].create({
-                        'name':self.vol_id.name,
-                        'attribute_id':attribute_vol_id,
-                        'attribute_value_id':self.vol_id.id,
-                        'parent_id':parent_id.id
-                    })
-            self.product_ids.write({'categ_id':categ.id})
-         
-
     @api.model
     def _create_pair_products(self, existing_pairs=[], new_pairs=[]):
         '''
@@ -227,6 +215,7 @@ class product_tab(models.Model):
     flavor_conc_line = fields.One2many(
         'flavor.conc.details', 'tab_id', "Flavors & Concentration Details"
     )
+    product_category_id = fields.Many2one('product.category',string = "Product Category")
 
 
 class flavor_concentration_details(models.Model):
