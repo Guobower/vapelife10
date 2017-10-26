@@ -1016,16 +1016,4 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
             return true
         },
     });
-
-
-//    var _super_ = screen.ProductScreenWidget.prototype.start
-//
-//    screen.ProductScreenWidget.prototype.start = function(){
-//        _super_.call(this)
-//        this.wholesale_widget = new WholeSalePosWidget(this,{});
-//    }
-
-//    return {
-//        'WholeSalePosWidget':WholeSalePosWidget
-//    }
 });
