@@ -79,25 +79,33 @@
 	        <!-- Tabs -->
 	        <div name = "tabs">
 	            <ul class="nav nav-tabs" style = "border-bottom:0px solid black !important ;" >
+	            		<t t-set="count" t-value="0"/> 
 	                <t t-foreach="widget.pos.product_tabs.models" t-as="tab">
-	                    <t t-if="tab_index == 0 ">
-	                        <li class="active" ><a data-toggle="tab" t-attf-href="#_{{ tab.get('id') }}"><t t-esc="tab.get('name')" /></a></li>
-	                    </t>
-	                    <t t-if="tab_index != 0 ">
-	                        <li><a data-toggle="tab" t-attf-href="#_{{ tab.get('id') }}"><t t-esc="tab.get('name')" /></a></li>
-	                    </t>
+	                		<t t-if = "widget.check_render_tab(tab)">
+		                    <t t-if="count == 0 ">
+		                        <li class="active" ><a data-toggle="tab" t-attf-href="#_{{ tab.get('id') }}"><t t-esc="tab.get('name')" /></a></li>
+		                    </t>
+		                    <t t-if="count != 0 ">
+		                        <li><a data-toggle="tab" t-attf-href="#_{{ tab.get('id') }}"><t t-esc="tab.get('name')" /></a></li>
+		                    </t>
+		                    <t t-set="count" t-value="count+1"/>	                		
+	                		</t>
 	                </t>
 	            </ul>
 	            <div class="tab-content">
+	            		<t t-set="count" t-value="0"/>
 	                <t t-foreach="widget.pos.product_tabs.models" t-as="tab">
-	                    <t t-if="tab_index == 0 ">
-	                        <div t-attf-id="_{{ tab.get('id') }}" class="tab-pane fade in active">
-	                        </div>
-	                    </t>
-	                    <t t-if="tab_index != 0 ">
-	                        <div t-attf-id="_{{ tab.get('id') }}" class="tab-pane fade">
-	                        </div>
-	                    </t>
+	                		<t t-if = "widget.check_render_tab(tab)">
+		                    <t t-if="count == 0 ">
+		                        <div t-attf-id="_{{ tab.get('id') }}"   class="tab-pane fade in active">
+		                        </div>
+		                    </t>
+		                    <t t-if="count != 0 ">
+		                        <div t-attf-id="_{{ tab.get('id') }}" class="tab-pane fade" >
+		                        </div>
+		                    </t>
+		                    <t t-set="count" t-value="count+1"/>
+	                		</t>
 	                </t>
 	            </div>
 	        </div>

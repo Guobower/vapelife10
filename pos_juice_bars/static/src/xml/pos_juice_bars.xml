@@ -78,11 +78,11 @@
                                     <div class="tab-content">
                                         <t t-foreach="widget.conc_ids" t-as="conc_id">
                                             <t t-if="conc_id_index == 0 ">
-                                                <div t-attf-id="_{{ conc_id }}" class="tab-pane fade in active">
+                                                <div t-attf-id="_{{ conc_id }}" class="tab-pane fade in active" style = "overflow-y: scroll;height: 550px"  >
                                                 </div>
                                             </t>
                                             <t t-if="conc_id_index != 0 ">
-                                                <div t-attf-id="_{{ conc_id }}" class="tab-pane fade">
+                                                <div t-attf-id="_{{ conc_id }}" class="tab-pane fade" style = "overflow-y: scroll;height: 550px">
                                                 </div>
                                             </t>
                                         </t>

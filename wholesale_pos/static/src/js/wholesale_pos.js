@@ -55,6 +55,7 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
         {
             model:'product.tab',
             label:"Product Tabs",
+            domain: [['active','=',true]],
             fields:[],
             loaded: function(self,product_tabs){
                 self.product_tabs = new Backbone.Collection(product_tabs)
@@ -683,6 +684,28 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
     			self.set_total();
     			self.set_balance();
         },
+        _render_tab:function(tab){
+        		var self = this;
+            var wholesale_tab = new WholeSaleTab(self,{'tab':tab});
+            self.tabs_widget.push(wholesale_tab);
+            wholesale_tab.renderElement();
+            wholesale_tab.on('qty_changed',self,function(tab_id){
+            		self.set_total_strength();
+            })
+            wholesale_tab.on('subtotal_changed',self,function(tab_id){
+            		self.set_subtotal();
+            })        		
+        },
+        check_render_tab:function(tab){
+        		var self = this;
+        		if (tab.get('visible_all_customers')){
+        			return true
+        		}else if ((tab.get('specific_customer_ids').length > 0 ) && (tab.get('specific_customer_ids').indexOf(self.pos.get_client().id) >=0)){
+    				return true
+        		}else{
+        			return false
+        		}        		
+        },
         start:function(){
             var self = this;
             self.total_units_element = new FieldFloat (self.dfm, {
@@ -778,20 +801,12 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
             self.balance.appendTo(self.$el.find("td#balance"))                        
     			self.payment_method = $(QWeb.render('Many2OneSelection',{models:self.pos.all_journals.models}))
     			self.payment_method.appendTo(self.$el.find("td#payment_method"));            
-            
-            
             self.pos.product_tabs.each(function(tab,key){
-                var wholesale_tab = new WholeSaleTab(self,{'tab':tab});
-                self.tabs_widget.push(wholesale_tab);
-                wholesale_tab.renderElement();
-                wholesale_tab.on('qty_changed',self,function(tab_id){
-                		self.set_total_strength();
-                })
-                wholesale_tab.on('subtotal_changed',self,function(tab_id){
-                		self.set_subtotal();
-                })                
-            });
-            self.$el.on("keydown",self,self.navigate.bind(self))            
+	        		if (self.check_render_tab(tab)){
+	        			self._render_tab(tab)
+	        		}
+	        });
+        self.$el.on("keydown",self,self.navigate.bind(self))            
         },
         get_payment_method:function(){
         		return this.payment_method.val() || false;
@@ -884,7 +899,6 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
         			return line.product_id
         		})
         		var product = new Model('product.product')
-        		console.log("===============product_ids",product_ids);
         		return product.call('read',[product_ids,['virtual_available','incoming_qty']]).then(function(res){
     				var inventory = new InventoryCollection(res)
     				var invalids = self.wholesale_widget.check_inventory(inventory)
