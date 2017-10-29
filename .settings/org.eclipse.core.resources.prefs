@@ -1,2 +1,6 @@
 eclipse.preferences.version=1
+encoding//order_reprinting_pos/models/pos_orderline.py=utf-8
+encoding//pos_layaway/__manifest__.py=utf-8
+encoding//pos_notes/__manifest__.py=utf-8
+encoding//vapelife/__manifest__.py=utf-8
 encoding//wholesale_pos/__manifest__.py=utf-8

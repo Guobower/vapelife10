@@ -52,7 +52,7 @@
                     </group>
                     <notebook>
                         <page string = "Products">
-                            <field name = "product_ids" nolabel="1" >
+                            <field name = "product_ids" nolabel="1" attrs = "{'readonly':[('tab_style','in',[1,5])]}" >
                                 <tree string = "Products">
                                     <field name = "name"/>
                                     <field name = "attribute_value_ids"/>

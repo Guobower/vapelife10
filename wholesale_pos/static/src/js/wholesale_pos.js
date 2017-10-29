@@ -16,7 +16,7 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
     var framework = require('web.framework');
     var PopupWidget = require('point_of_sale.popups');
     
-    
+    exports.load_fields("res.partner",['credit','debit'])
     FieldFloat.include({
     		initialize_content:function(){
     			this._super();

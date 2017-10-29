@@ -229,8 +229,7 @@ odoo.define("pos_juice_bars.juice_bar_mix",function(require){
 
     })
     gui.define_popup({name:'juice_bar_mix', widget: JuiceBarMixPopupWidget});
-    loadjscssfile("/pos_juice_bars/static/src/css/bootstrap3.7.min.css","css") ////dynamically load and add this .css file
-
+    loadjscssfile("/web/static/lib/bootstrap/css/bootstrap.css","css") ////dynamically load and add this .css file
 
     screen.ProductScreenWidget.prototype.click_product = function(product) {
             function _click_product(product){

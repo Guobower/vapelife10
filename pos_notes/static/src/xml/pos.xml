@@ -6,6 +6,23 @@
         </div>
     </t>
 
+	<t t-name = "TextAreaPopupWidgetNotes">
+        <div class="modal-dialog">
+            <div class="popup popup-textinput">
+                <p class="title"><t t-esc=" widget.options.title || '' " /></p>
+                <textarea rows="8" cols="40"><t t-esc="widget.options.value" /></textarea>
+                <div class="footer">
+                    <div class="button confirm">
+                        Ok 
+                    </div>
+                    <div class="button cancel">
+                        Cancel 
+                    </div>
+                </div>
+            </div>
+        </div>
+	</t>
+
     <t t-name="PosTicket">
         <div class="pos-sale-ticket" style = "font-size:18px !important;" >
 

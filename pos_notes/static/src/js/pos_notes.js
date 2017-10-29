@@ -5,9 +5,31 @@ odoo.define("pos_notes.add_notes",function(require){
 
     var screen = require('point_of_sale.screens');
     var exports = require("point_of_sale.models");
+    var PopupWidget = require('point_of_sale.popups');
+    var gui = require('point_of_sale.gui');
+    
     var QWeb = core.qweb;
     var _t = core._t;
 
+    var TextAreaPopupWidgetNotes = PopupWidget.extend({
+        template: 'TextAreaPopupWidgetNotes',
+        show: function(options){
+            options = options || {};
+            this._super(options);
+
+            this.renderElement();
+            this.$('input,textarea').focus();
+        },
+        click_confirm: function(){
+            var value = this.$('input,textarea').val();
+            this.gui.close_popup();
+            if( this.options.confirm ){
+                this.options.confirm.call(this,value);
+            }
+        },
+    });
+    gui.define_popup({name:'textareanotes', widget: TextAreaPopupWidgetNotes});    
+    
     exports.Order = exports.Order.extend({
         get_note:function(){
             return this.get('note') || '';
@@ -51,7 +73,7 @@ odoo.define("pos_notes.add_notes",function(require){
         button_click:function(){
             var self = this;
             var order  = self.parent.pos.get('selectedOrder')
-            self.parent.gui.show_popup('textarea',{
+            self.parent.gui.show_popup('textareanotes',{
                 'title':_t('Add Notes'),
                 'value':order.get_note(),
                 'confirm': function(value) {
