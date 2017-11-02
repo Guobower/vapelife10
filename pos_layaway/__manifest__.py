@@ -13,13 +13,17 @@
 
     """,
     'website': 'https://www.odoo.com',
-    'depends': ['base','point_of_sale','order_reprinting_pos'],
+    'depends': ['base','point_of_sale','stock_reserve'],
     'data': [
-        'views/pos_layaway.xml'
+        'views/pos_layaway.xml',
+        'views/pos_order_view.xml',
+        'report/receipt_report.xml',
+        'views/point_of_sale_report.xml',        
     ],
     'demo': [
     ],
     'css': [],
+    'images': ['static/description/banner.jpg'],
     'qweb': ['static/src/xml/*.xml'],
     'installable': True,
     'auto_install': False,

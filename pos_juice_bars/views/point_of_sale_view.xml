@@ -2,7 +2,7 @@
 	<data>
         <!-- Adding Miscellaneous field for Miscellaneous variants in product.product -->
         <record id="pos_order_tree_view" model="ir.ui.view">
-            <field name="name">product.product</field>
+            <field name="name">product.order</field>
             <field name="model">pos.order</field>
             <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
             <field name="arch" type="xml">

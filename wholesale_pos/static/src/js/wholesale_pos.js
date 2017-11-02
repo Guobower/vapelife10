@@ -870,6 +870,7 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
 
     var WholeSalePosScreenWidget = screen.ScreenWidget.extend({
         template:'WholeSalePosScreen',
+        back_screen:   'product',
         init: function(parent, options){
             this._super(parent, options);
             this.wholesale_widget = null;
@@ -930,7 +931,8 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
             		var pos_session_object = new Model('pos.session');
             		pos_session_object.call('confirm_order_interface',[order]).then(function(res){
         				self.do_action(res);
-        				self.back();
+        				self.click_back();
+        				self.pos.get('selectedOrder').destroy();
             		})        			
         		})
         },
@@ -958,11 +960,11 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
         			self._confirm_order();
         		}
         },
-        back:function(){
+        click_back: function(){
         		var self = this;
-            self._wholesale_widget_destroy();
-            self.gui.back();        		
-        },
+        		self._wholesale_widget_destroy();
+            this.gui.show_screen('products');
+        },        
         show:function(){
             var self = this;
             this._super();
@@ -979,7 +981,7 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
             self.wholesale_widget = new WholeSalePosWidget(self,{});
             self.wholesale_widget.appendTo(self.$el.find('div.subwindow-container-fix.touch-scrollable.scrollable-y'));
             self.$('span.back').click(function(){
-            		self.back();
+            		self.click_back();
             });
             self.$('span.next').click(function(){
             		self.confirm_order();
