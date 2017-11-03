@@ -1,2 +1,3 @@
 import pos_order
 import pos_orderline
+import pos_session

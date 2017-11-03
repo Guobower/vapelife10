@@ -50,10 +50,11 @@ class product_tab(models.Model):
         #(flavor_id,vol_id,conc_id) ---> pair
         product_obj = self.env['product.product']
         product_ids = []
+        product_template_ids = []
         for pair in pairs:
             # Check if such product already exists. If yes then do not create. Just add it to Many2many field of the tab
             self.env.cr.execute('''
-                select distinct(ptp.product_id) from product_tab_product_product as ptp
+                select ptp.product_id,t.id from product_tab_product_product as ptp
                 left join product_attribute_value_product_product_rel as a on a.product_product_id = ptp.product_id
                 left join product_attribute_value_product_product_rel as b on a.product_product_id = b.product_product_id
                 left join product_attribute_value_product_product_rel as c on b.product_product_id = c.product_product_id
@@ -65,7 +66,12 @@ class product_tab(models.Model):
             products = self.env.cr.fetchall()
             if products:
                 product_ids = product_ids + [product[0] for product in products]
-        products = product_obj.search([('id','in',product_ids)]).unlink()
+                product_template_ids = product_template_ids + [product[1] for product in products]
+                products = product_obj.search([('id','in',product_ids)]).unlink()
+                templates = self.env['product.template'].search([('id','in',product_template_ids)]) 
+                for j in templates:
+                    if not j.product_variant_ids:
+                        j.unlink()
         return True
 
     @api.multi
@@ -98,52 +104,54 @@ class product_tab(models.Model):
         attribute_conc_id = self.env['product.attribute'].search([('nature','=','conc')],limit=1).id
         attribute_flavor_id = self.env['product.attribute'].search([('nature','=','flav')],limit=1).id
         attribute_vol_id = self.env['product.attribute'].search([('nature','=','vol')],limit=1).id
+        created_product_template = {}
         for pair in pairs:
-            # Check if such product already exists. If yes then do not create. Just add it to Many2many field of the tab
-            # Skipping it as of now because it does not suit the multi brand model
-#             self.env.cr.execute('''
-#                 select distinct(a.product_product_id) from product_attribute_value_product_product_rel as a
-#                 left join product_attribute_value_product_product_rel as b on a.product_product_id = b.product_product_id
-#                 left join product_attribute_value_product_product_rel as c on b.product_product_id = c.product_product_id
-#                 left join product_product as p on a.product_product_id = p.id
-#                 where a.product_attribute_value_id = %s and b.product_attribute_value_id = %s and c.product_attribute_value_id = %s
-#                 and p.active = True
-#             '''%(pair[0].id,pair[1].id,pair[2].id))
-#             products = self.env.cr.fetchall()
-#             if products:
-#                 product_ids = product_ids + [x[0] for x in products]
-#                 continue
             # Check if a template exist which has same flavor, volume in the same tab . If yes then just add new concentration to it.
             # For the purpose first check if a product exists with same config and then find its template
             self.env.cr.execute('''
-                select distinct(t.id) from product_attribute_value_product_product_rel as a
-                left join product_attribute_value_product_product_rel as b on a.product_product_id = b.product_product_id
-                left join product_product as p on a.product_product_id = p.id
-                left join product_template as t on p.product_tmpl_id = t.id
-                left join product_tab_product_product as ptpp on ptpp.product_id = p.id
-                where a.product_attribute_value_id = %s and b.product_attribute_value_id = %s and t.active = True and ptpp.tab_id = %s
-            '''%(pair[0].id,pair[1].id,self.id))
-            product_templates = self.env.cr.fetchall()
-            if product_templates:
-                product_templates = map(lambda x:x[0],product_templates)
-                templates = template_obj.search([('id','in',product_templates)])
-                for j in templates:
-                    # Look for attribute_line_ids which has concentration attribute
-                    line_id = j.attribute_line_ids.filtered(lambda l: l.attribute_id.id == attribute_conc_id)
-                    current_product_variant_ids = j.product_variant_ids
-                    if line_id:
-                            j.write({
-                            'attribute_line_ids':[
-                                [1, line_id[0].id, {'value_ids': [[6, False, map(lambda x: x.id,line_id.value_ids) + [pair[2].id] ]]}]
-                            ]
-                        })
-                    else: # if there is not concentration attribute associated witht the product
-                        j.write({
-                            'attribute_line_ids': [
-                                [0, 0,{'value_ids': [(4,pair[2].id,False)],'attribute_id':attribute_conc_id,}]
-                            ],
-                        })
-                    product_ids = product_ids + [i.id for i in j.product_variant_ids - current_product_variant_ids]
+                select pt.id
+                from (select * from product_attribute_value_product_product_rel as a 
+                left join product_attribute_value as pav on pav.id = a.product_attribute_value_id 
+                left join product_attribute as pa on pa.id = pav.attribute_id
+                where pa.nature = 'vol' ) as vol
+                left join 
+                (select * from product_attribute_value_product_product_rel as b 
+                left join product_attribute_value as pav on pav.id = b.product_attribute_value_id 
+                left join product_attribute as pa on pa.id = pav.attribute_id
+                where pa.nature = 'flav') as flav on vol.product_product_id = flav.product_product_id
+                left join 
+                product_tab_product_product as ptpp on ptpp.product_id = vol.product_product_id
+                left join 
+                product_product as p on p.id = vol.product_product_id
+                left join
+                product_template as pt on pt.id = p.product_tmpl_id    
+                where vol.product_attribute_value_id = %s and flav.product_attribute_value_id = %s and ptpp.tab_id = %s
+                limit 1     
+            '''%(pair[1].id,pair[0].id,self.id))
+            product_template = self.env.cr.fetchone()
+            template = False
+            if product_template:
+                template = template_obj.search([('id','=',product_template[0])])
+            elif pair[0].id in created_product_template.keys():
+                # This is so that the templates those are created live but have not been written to DB but will be written when the function terminates
+                template = created_product_template[pair[0].id]
+            if template:
+                # Look for attribute_line_ids which has concentration attribute
+                line_id = template.attribute_line_ids.filtered(lambda l: l.attribute_id.id == attribute_conc_id)
+                current_product_variant_ids = template.product_variant_ids
+                if line_id:
+                        template.write({
+                        'attribute_line_ids':[
+                            [1, line_id[0].id, {'value_ids': [[6, False, map(lambda x: x.id,line_id.value_ids) + [pair[2].id] ]]}]
+                        ]
+                    })
+                else: # if there is not concentration attribute associated witht the product
+                    template.write({
+                        'attribute_line_ids': [
+                            [0, 0,{'value_ids': [(4,pair[2].id,False)],'attribute_id':attribute_conc_id,}]
+                        ],
+                    })
+                product_ids = product_ids + [i.id for i in template.product_variant_ids - current_product_variant_ids]
                 continue
             # This means there is no matchin product and prodct template hence create a new one
             # First create a template and then add the attributes to it
@@ -161,6 +169,8 @@ class product_tab(models.Model):
             if self.uom_id:
                 vals.update({'uom_id':self.uom_id.id,'uom_po_id':self.uom_id.id})
             tmpl = template_obj.create(vals)
+            # This is stored so that other concentrations will not create seperate product template but add themselves as variant
+            created_product_template.update({pair[0].id:tmpl}) 
             product_ids = product_ids + [i.id for i in tmpl.product_variant_ids]
         self.write({
             'product_ids':[(4,x,False) for x in list(set(product_ids))]
