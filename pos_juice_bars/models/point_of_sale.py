@@ -76,7 +76,6 @@ class pos_order(models.Model):
                     return_picking = Picking.create(return_vals)
                     return_picking.message_post(body=message)
             bar_ids = eval(self.env['ir.config_parameter'].get_param('pos_juice_bars.juice_bars_ids'))
-            attribute_vol_id = self.env.ref('vapelife.volume_attribute').id
             for line in order.lines.filtered(
                     lambda l: l.product_id.type in ['product', 'consu'] and not float_is_zero(l.qty,
                                                                                               precision_digits=l.product_id.uom_id.rounding)):
@@ -94,7 +93,7 @@ class pos_order(models.Model):
                 # Editted by Shivam Goyal
                 if line.product_id.id in bar_ids:
                     for j in line.mixture_line_id:
-                        vol_attribute_value = line.product_id.attribute_value_ids.filtered(lambda attr: attr.attribute_id.id == attribute_vol_id)
+                        vol_attribute_value = line.product_id.attribute_value_ids.filtered(lambda attr: attr.attribute_id.nature == 'vol')
                         qty = vol_attribute_value.actual_value * j.mix * line.qty
                         moves |= Move.create({
                             'name': line.name,

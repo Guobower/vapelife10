@@ -1,5 +1,5 @@
 eclipse.preferences.version=1
-encoding//order_reprinting_pos/__manifest__.py=utf-8
+encoding//pos_juice_bars/__manifest__.py=utf-8
 encoding//pos_layaway/__manifest__.py=utf-8
 encoding//pos_layaway/models/pos_order.py=utf-8
 encoding//pos_layaway/models/pos_orderline.py=utf-8
