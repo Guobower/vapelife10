@@ -195,13 +195,11 @@ var OldOrdersWidget = pos_screens.ScreenWidget.extend({
             return [];
         }
         var results = [];
-        console.log("=======searchbox",searchbox)
         for(var i = 0; i < Math.min(self.pos.pos_orders.length,1000); i++){
         		if (searchbox == "pos_reference"){
         			var r = re.exec(this.order_string);
         		}else{
         			var r = re.exec(this.partner_string);
-        			console.log("===========",this.partner_string)
         		}
             
             if(r){

@@ -5,3 +5,7 @@
     border-right: dashed 1px rgb(215,215,215) !important;
     border-left: dashed 1px rgb(215,215,215) !important;
 }
+
+.pos .breadcrumb-arrow {
+    width: 23px;
+}
