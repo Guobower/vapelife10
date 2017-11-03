@@ -2,3 +2,4 @@ import res_partner
 import product_attribute
 import product
 import sale_config_settings
+import product_pricelist
