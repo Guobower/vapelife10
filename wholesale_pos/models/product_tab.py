@@ -156,7 +156,7 @@ class product_tab(models.Model):
             # This means there is no matchin product and prodct template hence create a new one
             # First create a template and then add the attributes to it
             vals = {
-                    'name': " | ".join([pair[0].name, pair[1].name]),
+                    'name': " | ".join([self.name,pair[0].name, pair[1].name]),
                     'type':self.consumable_stockable,
                     'sale_ok':True,
                     'purchase_ok':True,
