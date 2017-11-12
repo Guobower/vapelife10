@@ -4,3 +4,5 @@ import payment_plan
 import pos_session
 import account_invoice
 import account_payment
+import stock_picking
+import res_company

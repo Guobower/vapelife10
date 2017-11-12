@@ -19,6 +19,10 @@
         'views/payment_plan_view.xml',
         'views/account_invoice_view.xml',
         'views/account_payment_view.xml',
+        'views/stock_report_views.xml',
+        'report/report_deliveryslip.xml',
+        'views/stock_picking_view.xml',
+        'views/res_company.xml'
     ],
     'demo': [
     ],

@@ -21,7 +21,8 @@
         'data/product_attribute_data.xml',
         'views/product.xml',
         'views/sale_config_settings_views.xml',
-        'views/account_invoice_view.xml'
+        'views/account_invoice_view.xml',
+        'views/stock_picking_view.xml',
     ],
     'demo': [
     ],

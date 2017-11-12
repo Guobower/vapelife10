@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+            string="Tabular Delivery Slip"
+            id="action_report_delivery_tabular"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="wholesale_pos.report_deliveryslip_tabular"
+            file="wholesale_pos.report_deliveryslip"
+        />
+	</data>
+</odoo>        
