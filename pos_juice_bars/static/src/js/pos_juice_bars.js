@@ -94,7 +94,6 @@ odoo.define("pos_juice_bars.juice_bar_mix",function(require){
                 var line_concentration_value = 0.00;
                 _.each(self.db.attributes,function(value,key){
                     var p = self.pos.db.product_by_id[key]
-                    console.log(self.pos.attribute_values.get(p.conc_id).get("actual_value"));
                     if (p.conc_id){
                         line_concentration_value = line_concentration_value +
                                             (self.pos.attribute_values.get(p.conc_id).get("actual_value") * self._get_mix_ratio(value));
