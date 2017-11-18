@@ -40,6 +40,7 @@
                             <field name = "sequence" />
                             <field name = "uom_id" />
                             <field name = "product_category_id" attrs = "{'invisible':[('tab_style','not in',[1,5])],'required':[('tab_style','in',[1,5])]}" />
+                            <field name = "pos_category_id" attrs = "{'invisible':[('tab_style','not in',[1,5])],'required':[('tab_style','in',[1,5])]}" />
                         </group>
                         <group>
                             <field name = "flavor_conc_line" attrs = "{'invisible':[('tab_style','not in',[1,5])]}" nolabel="1">
@@ -57,6 +58,7 @@
                                     <field name = "name"/>
                                     <field name = "attribute_value_ids"/>
                                     <field name = "categ_id" />
+                                    <field name = "pos_categ_id" />
                                 </tree>
                             </field>
                         </page>

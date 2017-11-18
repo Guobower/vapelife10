@@ -91,6 +91,7 @@ class product_tab(models.Model):
             raise ValidationError("Cannot change the volume of tab once created")
         if vals.get('consumable_stockable',False):
             self.product_ids.write({'type':vals.get('consumable_stockable',False)})
+        self.product_ids.write({'categ_id':self.product_category_id.id,'pos_categ_id':self.pos_category_id.id})    
         return result
 
     @api.model
@@ -126,6 +127,7 @@ class product_tab(models.Model):
                 left join
                 product_template as pt on pt.id = p.product_tmpl_id    
                 where vol.product_attribute_value_id = %s and flav.product_attribute_value_id = %s and ptpp.tab_id = %s
+                and p.active = True
                 limit 1     
             '''%(pair[1].id,pair[0].id,self.id))
             product_template = self.env.cr.fetchone()
@@ -156,7 +158,7 @@ class product_tab(models.Model):
             # This means there is no matchin product and prodct template hence create a new one
             # First create a template and then add the attributes to it
             vals = {
-                    'name': " | ".join([self.name,pair[0].name, pair[1].name,pair[2].name]),
+                    'name': " | ".join([self.name,pair[0].name, pair[1].name]),
                     'type':self.consumable_stockable,
                     'sale_ok':True,
                     'purchase_ok':True,
@@ -175,7 +177,7 @@ class product_tab(models.Model):
         self.write({
             'product_ids':[(4,x,False) for x in list(set(product_ids))]
         })
-        self.product_ids.write({'categ_id':self.product_category_id.id})
+        self.product_ids.write({'categ_id':self.product_category_id.id,'pos_categ_id':self.pos_category_id.id})
         return product_ids
     
     @api.model
@@ -226,6 +228,7 @@ class product_tab(models.Model):
         'flavor.conc.details', 'tab_id', "Flavors & Concentration Details"
     )
     product_category_id = fields.Many2one('product.category',string = "Product Category")
+    pos_category_id = fields.Many2one('pos.category',string = "POS Category")
 
 
 class flavor_concentration_details(models.Model):

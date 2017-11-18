@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_account_sale_manager,account.account sale manager,account.model_account_account,sales_team.group_sale_manager,1,0,0,0
+pos_mixture_line_pos_juice_bars,pos.mixture.line,,,,,,
