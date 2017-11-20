@@ -19,10 +19,10 @@
         'views/res_partner.xml',
         'views/product_attribute_views.xml',
         'data/product_attribute_data.xml',
-        'views/product.xml',
         'views/sale_config_settings_views.xml',
         'views/account_invoice_view.xml',
         'views/stock_picking_view.xml',
+        'views/stock_inventory.xml',
     ],
     'demo': [
     ],
