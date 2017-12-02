@@ -102,6 +102,9 @@
                 		</table>
                 </div>
                 <div class="footer">
+                    <span class='button confirm highlight'>
+                        Force Confirm
+                    </span>                                    		
                     <span class='button cancel highlight'>
                         Cancel
                     </span>                    

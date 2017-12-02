@@ -26,15 +26,15 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
     
     var InventoryPopUpWidget = PopupWidget.extend({
     		template: 'InventoryPopUp',
-    		init:function(parent,options){
+    		init:function(parent,args){
             var self = this;
             this.inventory_lines = [];
-            this._super(parent,options)    			
+            this._super(parent,args)    			
     		},
-    		show:function(inventory_lines){
+    		show:function(options){
     			var self = this;
-    			self.inventory_lines = inventory_lines;
-    			self._super();
+    			self.inventory_lines = options.inventory_lines;
+    			self._super(options);
     		},
     })
     gui.define_popup({name:'inventory', widget: InventoryPopUpWidget});
@@ -915,11 +915,19 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
         		var self = this;
         		var order = self.wholesale_widget.get_order();
         		var validate_deferred = self.validate_order(order);
+        		
+        		function _send_order(order){
+    				console.log("===========Force confirm")
+            		framework.blockUI();
+            		var pos_session_object = new Model('pos.session');
+            		pos_session_object.call('confirm_order_interface',[order]).then(function(res){
+        				self.do_action(res);
+        				self.click_back();
+        				self.pos.get('selectedOrder').destroy();
+            		})        			        			
+        		}
+        		
         		$.when(validate_deferred).then(function(validate){
-        			if (validate.invalids.length > 0){
-        				self.pos.gui.show_popup('inventory',validate.invalids)
-        				return
-        			}
             		if (!validate.validated){
             			self.gui.show_popup('error',{
                         'title':_t("Order Validation Error!"),
@@ -927,13 +935,18 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
                     });
             			return        			        			
             		}
-            		framework.blockUI();
-            		var pos_session_object = new Model('pos.session');
-            		pos_session_object.call('confirm_order_interface',[order]).then(function(res){
-        				self.do_action(res);
-        				self.click_back();
-        				self.pos.get('selectedOrder').destroy();
-            		})        			
+        			if (validate.invalids.length > 0){
+        				self.pos.gui.show_popup('inventory',{
+        					'inventory_lines':validate.invalids,
+        					'confirm':function(){
+        						console.log("====================click_confirm")
+        						_send_order(order);
+        					},
+        				})
+        				return
+        			}else{
+        				_send_order(order);
+        			}            		
         		})
         },
         confirm_order:function(){

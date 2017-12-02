@@ -39,8 +39,8 @@
                             <field name = "consumable_stockable" />
                             <field name = "sequence" />
                             <field name = "uom_id" />
-                            <field name = "product_category_id" attrs = "{'invisible':[('tab_style','not in',[1,5])],'required':[('tab_style','in',[1,5])]}" />
-                            <field name = "pos_category_id" attrs = "{'invisible':[('tab_style','not in',[1,5])],'required':[('tab_style','in',[1,5])]}" />
+                            <field name = "product_category_id" attrs = "{'invisible':[('tab_style','!=',1)],'required':[('tab_style','=',1)]}" />
+                            <field name = "pos_category_id" attrs = "{'invisible':[('tab_style','!=',1)],'required':[('tab_style','=',1)]}" />
                         </group>
                         <group>
                             <field name = "flavor_conc_line" attrs = "{'invisible':[('tab_style','not in',[1,5])]}" nolabel="1">

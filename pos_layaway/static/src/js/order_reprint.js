@@ -22,6 +22,7 @@ models.load_models({
                 for (var i in pos_orders){
                     new_order_list[pos_orders[i].id] = pos_orders[i];
                 }
+                console.log("============new_order_list",new_order_list)
                 self.pos_orders = new_order_list;
             },
         });

@@ -17,6 +17,7 @@
         'views/res_config_view.xml',
         'views/pos_juice_bars.xml',
         'views/point_of_sale_view.xml',
+        'security/ir.model.access.csv'
     ],
     'demo': [
     ],

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_payment_plan,access_payment_plan,model_payment_plan,,1,1,1,1
+access_product_tab,access_product_tab,model_product_tab,,1,1,1,1
+access_flavor_conc_details,access_flavor_conc_details,model_flavor_conc_details,,1,1,1,1

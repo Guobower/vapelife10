@@ -64,7 +64,7 @@ odoo.define("pos_layaway.pos_layaway",function(require){
 				                        self.pos.set('synch', {
 						                            state: 'connected',
 				                        });
-				                        self.pos.pos_orders.push(new_order);
+				                        self.pos.pos_orders[order_id] = new_order;
 				                        self.gui.screen_instances.OldOrdersWidget.render_list(self.pos.pos_orders);
 					                }).fail(function(error,event){
 				                        self.gui.show_popup('error-traceback',{

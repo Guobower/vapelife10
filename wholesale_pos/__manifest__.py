@@ -22,7 +22,8 @@
         'views/stock_report_views.xml',
         'report/report_deliveryslip.xml',
         'views/stock_picking_view.xml',
-        'views/res_company.xml'
+        'views/res_company.xml',
+        'security/ir.model.access.csv'
     ],
     'demo': [
     ],

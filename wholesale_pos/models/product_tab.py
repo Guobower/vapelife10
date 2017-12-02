@@ -78,7 +78,7 @@ class product_tab(models.Model):
     def write(self,vals):
         # The list will contain tuples with the following position
         # 0:tab_id,1:(flavor_id,flavor name),2:vol_id,3:conc_id
-        if vals.get('flavor_conc_line',False):
+        if vals.get('flavor_conc_line',False) and self.tab_style == 1:
             existing_pairs,new_pairs = [],[]
             existing_pairs = self._create_pair()
             result =  super(product_tab,self).write(vals)
@@ -91,7 +91,13 @@ class product_tab(models.Model):
             raise ValidationError("Cannot change the volume of tab once created")
         if vals.get('consumable_stockable',False):
             self.product_ids.write({'type':vals.get('consumable_stockable',False)})
-        self.product_ids.write({'categ_id':self.product_category_id.id,'pos_categ_id':self.pos_category_id.id})    
+        if self.tab_style == 1:
+            product_vals = {}
+            if vals.get('product_category_id'):
+                product_vals.update({'categ_id':self.product_category_id.id})
+            if vals.get('pos_category_id'):
+                product_vals.update({'pos_categ_id':self.pos_category_id.id})
+            self.product_ids.write(product_vals)    
         return result
 
     @api.model
