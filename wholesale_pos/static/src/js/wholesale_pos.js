@@ -15,6 +15,7 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
     var FieldText = core.form_widget_registry.get('text');
     var framework = require('web.framework');
     var PopupWidget = require('point_of_sale.popups');
+    var Users = new Model('res.users')
     
     exports.load_fields("res.partner",['credit','debit'])
     FieldFloat.include({
@@ -215,7 +216,10 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
             self.columns[product.conc_id].css('width',width)
             element.appendTo(self.columns[product.conc_id])
             element.$el.css('width',width);
-            console.log(element.$el);
+            element.$input.on("focus",function(){
+            		console.log("=====yo",this)
+            		$(this).select();
+            })
             element.on("changed_value",element,function(event){
             		self.set_subtotal();
             		self.trigger("qty_changed",product.conc_id)
@@ -609,19 +613,19 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
 		            	var tr = $(e.target).parents('tr:first');
 		            	var td_index = $(e.target).parent().index();
 		            	var tr_prev = tr.prev();
-		            	tr_prev.children("td").eq(td_index).find("input").focus();        				
+		            	tr_prev.children("td").eq(td_index).find("input").focus().select();
         				break;
         			case $.ui.keyCode.DOWN:
 		            	var tr = $(e.target).parents('tr:first');
 		            	var td_index = $(e.target).parent().index();
 		            	var tr_next = tr.next();
-		            	tr_next.children("td").eq(td_index).find("input").focus();        				
+		            	tr_next.children("td").eq(td_index).find("input").focus().select();        				
         				break;
         			case $.ui.keyCode.RIGHT:
-        				$(e.target).parent().next().find("input").focus();
+        				$(e.target).parent().next().find("input").focus().select();
         				break;
         			case $.ui.keyCode.LEFT:
-        				$(e.target).parent().prev().find("input").focus();
+        				$(e.target).parent().prev().find("input").focus().select();
         				break;
         		}
         },
@@ -940,7 +944,6 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
         				self.pos.gui.show_popup('inventory',{
         					'inventory_lines':validate.invalids,
         					'confirm':function(){
-        						console.log("====================click_confirm")
         						_send_order(order);
         					},
         				})
@@ -1025,11 +1028,15 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
             }
         }
     })
-    screen.define_action_button({
-        'name': 'pos_notes',
-        'widget': add_wholesalepos_button,
-        'condition': function(){
-            return true
-        },
-    });
+    Users.call('customize_has_groups', [['sales_team.group_sale_salesman', 'sales_team.group_sale_manager', 'sales_team.group_sale_salesman_all_leads']]).done(function(res){
+    		Users.call('customize_has_groups',[['account.group_account_invoice','account.group_account_user','account.group_account_manager']]).done(function(res1){
+    	        screen.define_action_button({
+    	            'name': 'pos_notes',
+    	            'widget': add_wholesalepos_button,
+    	            'condition': function(){
+    	            		return (res && res1)
+    	            },
+    	        });    	    			
+    		})
+    })    
 });
