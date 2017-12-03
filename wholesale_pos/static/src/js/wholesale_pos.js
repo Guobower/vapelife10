@@ -215,6 +215,7 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
             self.columns[product.conc_id].css('width',width)
             element.appendTo(self.columns[product.conc_id])
             element.$el.css('width',width);
+            console.log(element.$el);
             element.on("changed_value",element,function(event){
             		self.set_subtotal();
             		self.trigger("qty_changed",product.conc_id)

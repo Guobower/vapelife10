@@ -16,4 +16,4 @@ class ProductTemplate(models.Model):
 
     @api.one
     def _set_standard_price(self):
-        self.product_variant_ids.standard_price = self.standard_price    
+        self.product_variant_ids.write({'standard_price':self.standard_price})    
