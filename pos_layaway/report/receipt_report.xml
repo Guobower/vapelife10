@@ -90,7 +90,7 @@
         <template id="receipt_report">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
-                    <t t-call="order_reprinting_pos.receipt_report_document" t-lang="o.partner_id.lang"/>
+                    <t t-call="pos_layaway.receipt_report_document" t-lang="o.partner_id.lang"/>
                 </t>
             </t>
         </template>

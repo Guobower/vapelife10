@@ -5,8 +5,8 @@
             model="pos.order"
             string="Receipts"
             report_type="qweb-html"
-            name="order_reprinting_pos.receipt_report"
-            file="order_reprinting_pos.receipt_report"
+            name="pos_layaway.receipt_report"
+            file="pos_layaway.receipt_report"
         />
     <record id="pos_receipt_report" model="ir.actions.report.xml">
         <field name="name">Receipt</field>
