@@ -216,10 +216,6 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
             self.columns[product.conc_id].css('width',width)
             element.appendTo(self.columns[product.conc_id])
             element.$el.css('width',width);
-            element.$input.on("focus",function(){
-            		console.log("=====yo",this)
-            		$(this).select();
-            })
             element.on("changed_value",element,function(event){
             		self.set_subtotal();
             		self.trigger("qty_changed",product.conc_id)
@@ -811,7 +807,7 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
 	        			self._render_tab(tab)
 	        		}
 	        });
-        self.$el.on("keydown",self,self.navigate.bind(self))            
+        self.$el.on("keyup",self,self.navigate.bind(self))            
         },
         get_payment_method:function(){
         		return this.payment_method.val() || false;
@@ -922,7 +918,6 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
         		var validate_deferred = self.validate_order(order);
         		
         		function _send_order(order){
-    				console.log("===========Force confirm")
             		framework.blockUI();
             		var pos_session_object = new Model('pos.session');
             		pos_session_object.call('confirm_order_interface',[order]).then(function(res){
