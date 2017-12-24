@@ -1,1 +1,1 @@
-import pos_invoice
+import pos_receipt_report

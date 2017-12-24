@@ -18,7 +18,8 @@
         'views/pos_layaway.xml',
         'views/pos_order_view.xml',
         'report/receipt_report.xml',
-        'views/point_of_sale_report.xml',        
+        'data/report_paperformat.xml',
+        'views/point_of_sale_report.xml',
     ],
     'demo': [
     ],

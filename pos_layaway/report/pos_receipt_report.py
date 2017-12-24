@@ -26,9 +26,23 @@ from odoo import api, models
 
 
 class PosReceiptReport(models.AbstractModel):
-    _name = 'report.point_of_sale.report_receipts'
+    _name = 'report.pos_layaway.receipt_report'
 
+    def _get_journal_amt(self, order_id):
+        data={}
+        sql = """ select aj.name,absl.amount as amt from account_bank_statement as abs
+                        LEFT JOIN account_bank_statement_line as absl ON abs.id = absl.statement_id
+                        LEFT JOIN account_journal as aj ON aj.id = abs.journal_id
+                        WHERE absl.pos_statement_id =%d"""%(order_id)
+        self._cr.execute(sql)
+        data = self._cr.dictfetchall()
+        return data
+    
     @api.model
     def render_html(self, docids, data=None):
         Report = self.env['report']
-        return Report.sudo().render('order_reprinting_pos.receipt_report', {'docs': self.env['pos.order'].sudo().browse(docids)})
+        docargs = {
+            "docs": self.env['pos.order'].sudo().browse(docids),
+            'get_journal_amt': self._get_journal_amt,
+         }
+        return Report.sudo().render('pos_layaway.receipt_report', docargs)
