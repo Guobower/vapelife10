@@ -4,7 +4,7 @@
             id="pos_orders"
             model="pos.order"
             string="Receipts"
-            report_type="qweb-html"
+            report_type="qweb-pdf"
             name="pos_layaway.receipt_report"
             file="pos_layaway.receipt_report"
         />
