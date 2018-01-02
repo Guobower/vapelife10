@@ -24,14 +24,11 @@
 	</t>
 
     <t t-name="PosTicket">
-        <div class="pos-sale-ticket" style = "font-size:18px !important;" >
+        <div class="pos-sale-ticket" style = "font-size:12px !important;" >
 
             <div class="pos-center-align"><t t-esc="moment().format('L LT')"/> <t t-esc="order.name"/></div>
             <br />
             <t t-esc="widget.pos.company.name"/><br />
-            <div class="receipt-phone">
-                Phone: <t t-esc="widget.pos.company.phone || ''"/><br />
-            </div>
             <div class="receipt-user">
                 User: <t t-esc="widget.pos.cashier ? widget.pos.cashier.name : widget.pos.user.name"/><br />
             </div>

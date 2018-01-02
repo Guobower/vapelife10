@@ -98,11 +98,9 @@
 
     <t t-name="PosTicketOld">
         <div class="pos-sale-ticket" style="margin-left:30% !important;">
-
             <div class="pos-center-align"><t t-esc="moment().format('L LT')"/> <t t-esc="order.pos_reference"/></div>
             <br />
             <t t-esc="widget.pos.company.name"/><br />
-            Phone: <t t-esc="widget.pos.company.phone || ''"/><br />
             User: <t t-esc="widget.pos.cashier ? widget.pos.cashier.name : widget.pos.user.name"/><br />
             <br />
 

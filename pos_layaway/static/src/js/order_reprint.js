@@ -248,7 +248,6 @@ var OldOrdersWidget = pos_screens.ScreenWidget.extend({
 	        					var posModel = new Model('pos.order')
 	        					posModel.call('make_layaway_payment',[order_id,input,item]).then(function(res){
 	        						var order = self.get_order_by_id(order_id)
-	        						console.log("============order",self)
 	        						order.state = res.state;
 	        						order.balance = res.balance;
 	        						order.amount_paid = res.amount_paid;
