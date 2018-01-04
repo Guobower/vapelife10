@@ -207,18 +207,30 @@ odoo.define("pos_juice_bars.juice_bar_mix",function(require){
                     var container = $(QWeb.render('JuiceBarListWidget',{}));
                     self.tabs[conc_id] = container;
                     self.tabs[conc_id].appendTo(self.$el.find('div#_'+conc_id))
+                    var products_to_render = [];
                     _.each(self.pos.db.product_by_id,function(p,key){
-                        if (p.attribute_value_ids.indexOf(self.vol_id) > -1 &&  p.attribute_value_ids.indexOf(conc_id)  > -1 ){
-                            var product_render = self.render_product(p);
-                            product_render.appendTo(container.find("div.product-list"));
-                            product_render.data('id',p.id)
-//                            products.push(product_render);
-                            product_render.on("click",function(){
-                                p.conc_id = conc_id;
-                                self.click_product_handler(this,p)
-                            });
-                        }
+	                    	if (p.attribute_value_ids.indexOf(self.vol_id) > -1 &&  p.attribute_value_ids.indexOf(conc_id)  > -1 ){
+	                    		products_to_render.push(p)
+	                    	}
                     });
+                    	products_to_render.sort(function(a, b){
+                    	    var nameA= a.display_name.toLowerCase(), nameB=b.display_name.toLowerCase()
+                    	    if (nameA < nameB) //sort string ascending
+                    	        return -1 
+                    	    if (nameA > nameB)
+                    	        return 1
+                    	    return 0 //default return value (no sorting)
+                    	})
+                    	_.each(products_to_render,function(p,index){
+                        var product_render = self.render_product(p);
+                        product_render.appendTo(container.find("div.product-list"));
+                        product_render.data('id',p.id)
+//                      products.push(product_render);
+                        product_render.on("click",function(){
+                            p.conc_id = conc_id;
+                            self.click_product_handler(this,p)
+                        });
+                    	})
                 })
             },
             renderElement:function(){
