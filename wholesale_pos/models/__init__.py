@@ -7,3 +7,4 @@ import account_payment
 import stock_picking
 import res_company
 import res_users
+import pos_config

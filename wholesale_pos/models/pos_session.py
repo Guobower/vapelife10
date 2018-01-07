@@ -27,6 +27,8 @@ class PosSession(models.Model):
                 'note':order['note'],
                 'order_line':lines,
             })
+        if order.get('warehouse_id',False):
+            sale_order.warehouse_id = int(order['warehouse_id']) 
         sale_order.action_confirm()
         wizard_id = self.env['sale.advance.payment.inv'].create({'advance_payment_method':'all'})
         res = wizard_id.with_context(open_invoices = True,active_ids = sale_order.id).create_invoices()

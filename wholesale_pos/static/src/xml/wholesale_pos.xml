@@ -123,9 +123,16 @@
 	    <select class='detail client-address-country needsclick text-center' name='country_id'>
 	        <option value=''>None</option>
 	        <t t-foreach='models' t-as='model'>
-	            <option t-att-value="model.get('id')"> 
-	                <t t-esc="model.get('name')"/>
-	            </option>
+	        		<t t-if = "model.get('id') == selected_id[0]">
+		            <option  t-att-value="model.get('id')" selected="1"> 
+		                <t t-esc="model.get('name')"/>
+		            </option>	        		
+	        		</t>
+	        		<t t-if = "model.get('id') != selected_id">
+		            <option   t-att-value="model.get('id')"> 
+		                <t t-esc="model.get('name')"/>
+		            </option>	        		
+	        		</t>
 	        </t>
 	    </select>
     </t>
@@ -216,8 +223,8 @@
 	        				<tr>
         						<td>Net Total</td>
         						<td id="net_total"></td>	        				
-        						<td></td>
-        						<td></td>
+        						<td>Warehouse</td>
+        						<td id="stock_warehouse"></td>
 	        				</tr>	
 	        				<tr id = "payment_plans">
 

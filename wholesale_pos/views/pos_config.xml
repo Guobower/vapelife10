@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<odoo>
+	<record id= "pos_config_vapelife_wholesale" model = "ir.ui.view">
+        <field name="name">pos.config</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_config_form" />
+        <field name="arch" type="xml">
+            <xpath expr = "/form/sheet" position = "inside" >
+            		<group name = "wholesale" string = "Wholesale">
+					<field name = "warehouse_id" />            		
+            		</group>
+            </xpath>
+        </field>
+    </record>	
+</odoo>

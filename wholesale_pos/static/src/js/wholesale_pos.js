@@ -69,7 +69,15 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
             loaded: function(self,product_attributes){
                 self.product_attributes = new Backbone.Collection(product_attributes)
             },
-        }
+        },
+        {
+            model:'stock.warehouse',
+            label:"Stock Warehouse",
+            fields:[],
+            loaded: function(self,stock_warehouse){
+                self.stock_warehouse = new Backbone.Collection(stock_warehouse)
+            },
+        }        
     ])
     var WholeSaleMatrixRow = PosBaseWidget.extend({
         init:function(parent,options){
@@ -800,8 +808,12 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
                 },
             });
             self.balance.appendTo(self.$el.find("td#balance"))                        
-    			self.payment_method = $(QWeb.render('Many2OneSelection',{models:self.pos.all_journals.models}))
+    			self.payment_method = $(QWeb.render('Many2OneSelection',{models:self.pos.all_journals.models,selected_id:[0]}))
     			self.payment_method.appendTo(self.$el.find("td#payment_method"));            
+            self.stock_warehouse = $(QWeb.render('Many2OneSelection',{models:self.pos.stock_warehouse.models,selected_id:self.pos.config.warehouse_id || [0]}))
+            self.stock_warehouse.appendTo(self.$el.find("td#stock_warehouse"));
+            console.log(self.pos)
+            
             self.pos.product_tabs.each(function(tab,key){
 	        		if (self.check_render_tab(tab)){
 	        			self._render_tab(tab)
@@ -811,6 +823,9 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
         },
         get_payment_method:function(){
         		return this.payment_method.val() || false;
+        },
+        get_warehouse_id:function(){
+        		return this.stock_warehouse.val() || false;
         },
         get_balance:function(){
         		var self = this;
@@ -862,6 +877,7 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
     				'discount_percentage':self.get_discount_percentage(),
     				'paid':parseFloat(self.paid.get_value()),
     				'payment_method':self.get_payment_method(),
+    				'warehouse_id':self.get_warehouse_id(),
     				'note':self.order_notes.get_value() || '',
         		};
     			res['payment_lines'] = self.payment_plans_widget.get_lines()
