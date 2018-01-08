@@ -68,7 +68,7 @@ odoo.define("wholesale_pos.payment_plans",function(require){
     							"<td  id = 'date' ></td>" +
     							"<td  id = 'delete' ></td>" +
 						"</tr>")
-    			self.payment_method = $(QWeb.render('Many2OneSelection',{models:self.pos.all_journals.models}))
+    			self.payment_method = $(QWeb.render('Many2OneSelection',{models:self.pos.all_journals.models,selected_id:[0]}))
     			self.payment_method.appendTo(self.$el.find("td#payment_method"));
     			self.amount = new FieldFloat (self.dfm, {
                     attrs: {
