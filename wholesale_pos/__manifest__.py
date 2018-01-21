@@ -11,7 +11,7 @@
 
     """,
     'website': 'https://www.odoo.com/page/crm',
-    'depends': ['base','product','sales_team','vapelife','account','point_of_sale','sale'],
+    'depends': ['base','product','sales_team','vapelife','account','point_of_sale','sale','mail'],
     'data': [
         'views/product_tab_view.xml',
         'views/wholesale_pos.xml',

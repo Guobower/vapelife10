@@ -53,5 +53,11 @@ class PosSession(models.Model):
         invoice_report = self.env['report'].get_action(account_invoice, 'account.report_invoice')
         if order['payment_lines']:
             account_invoice.write({'payment_plan_ids':[[0,0,line] for line in order['payment_lines']]})
-            
+        
+        if order.get('send_mail',False):
+            template = self.env.ref('account.email_template_edi_invoice', False)
+            ctx = dict(
+                mark_invoice_as_sent=True,
+            )
+            template.with_context(ctx).send_mail(account_invoice.id,force_send=True)
         return invoice_report

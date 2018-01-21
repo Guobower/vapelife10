@@ -225,6 +225,10 @@
         						<td id="net_total"></td>	        				
         						<td>Warehouse</td>
         						<td id="stock_warehouse"></td>
+	        				</tr>
+	        				<tr>
+        						<td>Email Invoice</td>
+        						<td id="send_email"></td>        							        				
 	        				</tr>	
 	        				<tr id = "payment_plans">
 

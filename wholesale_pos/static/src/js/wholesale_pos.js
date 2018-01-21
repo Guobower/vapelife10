@@ -13,6 +13,7 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
     var _t = core._t;
     var FieldFloat = core.form_widget_registry.get('float');
     var FieldText = core.form_widget_registry.get('text');
+    var FieldBool = core.form_widget_registry.get('boolean');
     var framework = require('web.framework');
     var PopupWidget = require('point_of_sale.popups');
     var Users = new Model('res.users')
@@ -812,8 +813,14 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
     			self.payment_method.appendTo(self.$el.find("td#payment_method"));            
             self.stock_warehouse = $(QWeb.render('Many2OneSelection',{models:self.pos.stock_warehouse.models,selected_id:self.pos.config.warehouse_id || [0]}))
             self.stock_warehouse.appendTo(self.$el.find("td#stock_warehouse"));
-            console.log(self.pos)
-            
+            	self.send_mail = new FieldBool(self.dfm,{
+            		attrs:{
+            			name:'send_email',
+            			type:"boolean",
+            		}
+            	})
+            	self.send_mail.set_value(true)
+            	self.send_mail.appendTo(self.$el.find("td#send_email"));
             self.pos.product_tabs.each(function(tab,key){
 	        		if (self.check_render_tab(tab)){
 	        			self._render_tab(tab)
@@ -878,6 +885,7 @@ odoo.define("wholesale_pos.wholesale_pos",function(require){
     				'paid':parseFloat(self.paid.get_value()),
     				'payment_method':self.get_payment_method(),
     				'warehouse_id':self.get_warehouse_id(),
+    				'send_mail':self.send_mail.get_value(),
     				'note':self.order_notes.get_value() || '',
         		};
     			res['payment_lines'] = self.payment_plans_widget.get_lines()
