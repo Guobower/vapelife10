@@ -96,7 +96,7 @@ class pos_order(models.Model):
                         vol_attribute_value = line.product_id.attribute_value_ids.filtered(lambda attr: attr.attribute_id.nature == 'vol')
                         # The attribute value is in ml and 350ml bottle is in Juice Bar units and 1 Juice Bar Unit is equal to 350ml  
                         #Example Product Attribute Value -> Actual value = 10ml and line.product_id.uom_id.factor_inv = 350ml
-                        qty = vol_attribute_value.actual_value * j.mix * line.qty / float(line.product_id.uom_id.factor_inv)
+                        qty = vol_attribute_value.actual_value * j.mix * line.qty / float(j.product_id.uom_id.factor_inv)
                         moves |= Move.create({
                             'name': line.name,
                             'product_uom': j.product_id.uom_id.id,

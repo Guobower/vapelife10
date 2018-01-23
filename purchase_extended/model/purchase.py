@@ -24,7 +24,6 @@ class PurchaseOrder(models.Model):
                     invoice_id = invoice_object.create({'partner_id':self.partner_id.id,'reference':order.name,'date_invoice':fields.datetime.now()})
                     for line in self.order_line:
                         data = invoice_object._prepare_invoice_line_from_po_line(line)
-                        print '===================data',data
                         invoice_lines.append((0,False,data))
                     invoice_id.write({'invoice_line_ids':invoice_lines})
             else:
