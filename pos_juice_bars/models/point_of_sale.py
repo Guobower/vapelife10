@@ -92,23 +92,78 @@ class pos_order(models.Model):
                 })
                 # Editted by Shivam Goyal
                 if line.product_id.id in bar_ids:
-                    for j in line.mixture_line_id:
-                        vol_attribute_value = line.product_id.attribute_value_ids.filtered(lambda attr: attr.attribute_id.nature == 'vol')
-                        # The attribute value is in ml and 350ml bottle is in Juice Bar units and 1 Juice Bar Unit is equal to 350ml  
-                        #Example Product Attribute Value -> Actual value = 10ml and line.product_id.uom_id.factor_inv = 350ml
-                        qty = vol_attribute_value.actual_value * j.mix * line.qty / float(j.product_id.uom_id.factor_inv)
-                        moves |= Move.create({
-                            'name': line.name,
-                            'product_uom': j.product_id.uom_id.id,
-                            'picking_id': order_picking.id if line.qty >= 0 else return_picking.id,
-                            'picking_type_id': picking_type.id if line.qty >= 0 else return_pick_type.id,
-                            'product_id': j.product_id.id,
-                            'product_uom_qty': abs(qty),
-                            'state': 'draft',
-                            'location_id': location_id if line.qty >= 0 else destination_id,
-                            'location_dest_id': destination_id if line.qty >= 0 else return_pick_type != picking_type and return_pick_type.default_location_dest_id.id or location_id,
-                        })
-
+                    # This means we first have a manufacture a Juice Bar and then transfer it to customer location
+#                     for j in line.mixture_line_id:
+#                         vol_attribute_value = line.product_id.attribute_value_ids.filtered(lambda attr: attr.attribute_id.nature == 'vol')
+#                         # The attribute value is in ml and 350ml bottle is in Juice Bar units and 1 Juice Bar Unit is equal to 350ml  
+#                         #Example Product Attribute Value -> Actual value = 10ml and line.product_id.uom_id.factor_inv = 350ml
+#                         qty = vol_attribute_value.actual_value * j.mix * line.qty / float(j.product_id.uom_id.factor_inv)
+#                         moves |= Move.create({
+#                             'name': line.name,
+#                             'product_uom': j.product_id.uom_id.id,
+#                             'picking_id': order_picking.id if line.qty >= 0 else return_picking.id,
+#                             'picking_type_id': picking_type.id if line.qty >= 0 else return_pick_type.id,
+#                             'product_id': j.product_id.id,
+#                             'product_uom_qty': abs(qty),
+#                             'state': 'draft',
+#                             'location_id': location_id if line.qty >= 0 else destination_id,
+#                             'location_dest_id': destination_id if line.qty >= 0 else return_pick_type != picking_type and return_pick_type.default_location_dest_id.id or location_id,
+#                         })
+                    mo = self.env['mrp.production'].sudo()
+                    mo_data = {
+                            'product_id':line.product_id.id,
+                            'product_uom_id':line.product_id.uom_id.id,
+                            'product_qty':line.qty,
+                            'origin':order.name,
+                            'bom_id':1,
+                           }
+                    mo_location = self.env.ref('stock.stock_location_stock')
+                    mo_picking_type_id = order.session_id.config_id.manufacturing_picking_type_id
+                    if mo_picking_type_id:
+                        mo_data.update({
+                                'picking_type_id':mo_picking_type_id.id,
+                                'location_src_id':mo_picking_type_id.default_location_src_id.id or mo_location.id,
+                                'location_dest_id':mo_picking_type_id.default_location_dest_id.id or  mo_location.id,
+                                })
+                        bom = self.env['mrp.bom']._bom_find(product=line.product_id, picking_type=mo_picking_type_id, company_id=order.company_id.id)
+                        if bom.type == 'normal':
+                            mo_data.update({'bom_id':bom.id})
+                            mo_id = mo.create(mo_data)
+                            original_quantity = mo_id.product_qty - mo_id.qty_produced
+                            for index,j in enumerate(line.mixture_line_id):
+                                vol_attribute_value = line.product_id.attribute_value_ids.filtered(lambda attr: attr.attribute_id.nature == 'vol')
+                                # The attribute value is in ml and 350ml bottle is in Juice Bar units and 1 Juice Bar Unit is equal to 350ml  
+                                #Example Product Attribute Value -> Actual value = 10ml and line.product_id.uom_id.factor_inv = 350ml
+                                qty = vol_attribute_value.actual_value * j.mix * line.qty / float(j.product_id.uom_id.factor_inv)
+                                data = {
+                                    'sequence': index,
+                                    'name': order.name,
+                                    'date': mo_id.date_planned_start,
+                                    'date_expected': mo_id.date_planned_start,
+                                    'product_id': j.product_id.id,
+                                    'product_uom_qty': qty,
+                                    'product_uom': j.product_id.uom_id.id,
+                                    'location_id': mo_picking_type_id.default_location_src_id.id or mo_location.id,
+                                    'location_dest_id': mo_id.product_id.property_stock_production.id,
+                                    'raw_material_production_id': mo_id.id,
+                                    'company_id': mo_id.company_id.id,
+                                    'operation_id': False,
+                                    'price_unit': j.product_id.standard_price,
+                                    'procure_method': 'make_to_stock',
+                                    'origin': mo_id.name,
+                                    'warehouse_id': mo_picking_type_id.default_location_src_id.get_warehouse().id,
+                                    'group_id': mo_id.procurement_group_id.id,
+                                    'propagate': mo_id.propagate,
+                                    'unit_factor': qty / original_quantity,
+                                    }
+                                self.env['stock.move'].create(data) 
+                            wizard_production = self.env['mrp.product.produce'].with_context({'active_id':mo_id.id,
+                                                                          'active_model':'mrp.production',
+                                                                          'active_ids':[mo_id.id]
+                                                                          }).create({'product_qty':line.qty})
+                            mo_id.action_assign()
+                            wizard_production.do_produce()
+                            mo_id.button_mark_done()
             # prefer associating the regular order picking, not the return
             order.write({'picking_id': order_picking.id or return_picking.id})
 

@@ -1,2 +1,3 @@
 import res_config
 import point_of_sale
+import pos_config

@@ -243,7 +243,7 @@ odoo.define("pos_juice_bars.juice_bar_mix",function(require){
     loadjscssfile("/web/static/lib/bootstrap/css/bootstrap.css","css") ////dynamically load and add this .css file
 
     screen.ProductScreenWidget.prototype.click_product = function(product) {
-            function _click_product(product){
+    			function _click_product(product){
                 var self = this;
                 if(product.to_weight && this.pos.config.iface_electronic_scale){
                     this.gui.show_screen('scale',{product: product});
@@ -253,7 +253,7 @@ odoo.define("pos_juice_bars.juice_bar_mix",function(require){
             }
             var self = this;
             $.when(this.product_list_widget.volume_id,this.product_list_widget.conc_ids,this.product_list_widget.juice_bar_ids).then(function(vol_id,c_ids,j_b_ids){
-                var vol_id = parseInt(vol_id);
+            		var vol_id = parseInt(vol_id);
                 var conc_ids  = JSON.parse(c_ids);
                 var juice_bar_ids = JSON.parse(j_b_ids);
                 if (vol_id && conc_ids.length > 0){
