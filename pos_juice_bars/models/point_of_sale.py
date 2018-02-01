@@ -116,6 +116,7 @@ class pos_order(models.Model):
                             'product_qty':line.qty,
                             'origin':order.name,
                             'bom_id':1,
+                            'user_id':self._uid,
                            }
                     mo_location = self.env.ref('stock.stock_location_stock')
                     mo_picking_type_id = order.session_id.config_id.manufacturing_picking_type_id
@@ -125,45 +126,46 @@ class pos_order(models.Model):
                                 'location_src_id':mo_picking_type_id.default_location_src_id.id or mo_location.id,
                                 'location_dest_id':mo_picking_type_id.default_location_dest_id.id or  mo_location.id,
                                 })
-                        bom = self.env['mrp.bom']._bom_find(product=line.product_id, picking_type=mo_picking_type_id, company_id=order.company_id.id)
+                        bom = self.env['mrp.bom'].sudo()._bom_find(product=line.product_id, picking_type=mo_picking_type_id, company_id=order.company_id.id)
                         if bom.type == 'normal':
                             mo_data.update({'bom_id':bom.id})
                             mo_id = mo.create(mo_data)
-                            original_quantity = mo_id.product_qty - mo_id.qty_produced
+                            original_quantity = mo_id.sudo().product_qty - mo_id.sudo().qty_produced
                             for index,j in enumerate(line.mixture_line_id):
                                 vol_attribute_value = line.product_id.attribute_value_ids.filtered(lambda attr: attr.attribute_id.nature == 'vol')
                                 # The attribute value is in ml and 350ml bottle is in Juice Bar units and 1 Juice Bar Unit is equal to 350ml  
                                 #Example Product Attribute Value -> Actual value = 10ml and line.product_id.uom_id.factor_inv = 350ml
                                 qty = vol_attribute_value.actual_value * j.mix * line.qty / float(j.product_id.uom_id.factor_inv)
+                                print "==========qty",qty
                                 data = {
                                     'sequence': index,
                                     'name': order.name,
-                                    'date': mo_id.date_planned_start,
-                                    'date_expected': mo_id.date_planned_start,
+                                    'date': mo_id.sudo().date_planned_start,
+                                    'date_expected': mo_id.sudo().date_planned_start,
                                     'product_id': j.product_id.id,
                                     'product_uom_qty': qty,
                                     'product_uom': j.product_id.uom_id.id,
                                     'location_id': mo_picking_type_id.default_location_src_id.id or mo_location.id,
-                                    'location_dest_id': mo_id.product_id.property_stock_production.id,
-                                    'raw_material_production_id': mo_id.id,
-                                    'company_id': mo_id.company_id.id,
+                                    'location_dest_id': mo_id.sudo().product_id.property_stock_production.id,
+                                    'raw_material_production_id': mo_id.sudo().id,
+                                    'company_id': mo_id.sudo().company_id.id,
                                     'operation_id': False,
                                     'price_unit': j.product_id.standard_price,
                                     'procure_method': 'make_to_stock',
-                                    'origin': mo_id.name,
+                                    'origin': mo_id.sudo().name,
                                     'warehouse_id': mo_picking_type_id.default_location_src_id.get_warehouse().id,
-                                    'group_id': mo_id.procurement_group_id.id,
-                                    'propagate': mo_id.propagate,
+                                    'group_id': mo_id.sudo().procurement_group_id.id,
+                                    'propagate': mo_id.sudo().propagate,
                                     'unit_factor': qty / original_quantity,
                                     }
-                                self.env['stock.move'].create(data) 
-                            wizard_production = self.env['mrp.product.produce'].with_context({'active_id':mo_id.id,
+                                self.env['stock.move'].sudo().create(data)
+                            wizard_production = self.env['mrp.product.produce'].with_context({'active_id':mo_id.sudo().id,
                                                                           'active_model':'mrp.production',
-                                                                          'active_ids':[mo_id.id]
-                                                                          }).create({'product_qty':line.qty})
-                            mo_id.action_assign()
-                            wizard_production.do_produce()
-                            mo_id.button_mark_done()
+                                                                          'active_ids':[mo_id.sudo().id]
+                                                                          }).sudo().create({'product_qty':line.qty})
+                            mo_id.sudo().action_assign()
+                            wizard_production.sudo().do_produce()
+                            mo_id.sudo().button_mark_done()
             # prefer associating the regular order picking, not the return
             order.write({'picking_id': order_picking.id or return_picking.id})
 
