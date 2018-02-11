@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<odoo>
+	<menuitem name="Dashboard"
+            id="vaping_reports_main_menu"
+            web_icon="reports,static/description/icon.png" sequence="0"/>
+	<menuitem name="Reports"
+            id="heading_vaping_reports_main_menu"
+            parent = "vaping_reports_main_menu"
+            />
+    <record id="action_report_pos_order_all_vaping" model="ir.actions.act_window">
+        <field name="name">POS Orders Analysis</field>
+        <field name="res_model">report.pos.order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="search_view_id" ref="point_of_sale.view_report_pos_order_search"/>
+        <field name="context">{'group_by_no_leaf':1,'group_by':[]}</field>
+    </record>	
+    
+    <record id="action_account_invoice_report_all_vaping" model="ir.actions.act_window">
+        <field name="name">Invoices Analysis</field>
+        <field name="res_model">account.invoice.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="context">{'search_default_current':1, 'search_default_customer':1, 'group_by':[], 'group_by_no_leaf':1, 'search_default_year': 1}</field>
+        <field name="search_view_id" ref="account.view_account_invoice_report_search"/>
+        <field name="help">From this report, you can have an overview of the amount invoiced to your customers. The search tool can also be used to personalise your Invoices reports and so, match this analysis to your needs.</field>
+    </record>    
+    
+    <menuitem id="submenu_report_pos_order_all_vaping" name="POS Orders Analysis" action="action_report_pos_order_all_vaping" 
+    parent="heading_vaping_reports_main_menu" sequence="0"/>    
+    
+    <menuitem id="submenu_action_account_invoice_report_all_vaping" name="Invoice Analysis" action="action_account_invoice_report_all_vaping" 
+    parent="heading_vaping_reports_main_menu" sequence="1"/>        
+	
+</odoo>
