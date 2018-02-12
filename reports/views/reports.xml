@@ -26,10 +26,10 @@
         <field name="help">From this report, you can have an overview of the amount invoiced to your customers. The search tool can also be used to personalise your Invoices reports and so, match this analysis to your needs.</field>
     </record>    
     
-    <menuitem id="submenu_report_pos_order_all_vaping" name="POS Orders Analysis" action="action_report_pos_order_all_vaping" 
+    <menuitem id="submenu_report_pos_order_all_vaping" name="Retail Orders Analysis" action="action_report_pos_order_all_vaping" 
     parent="heading_vaping_reports_main_menu" sequence="0"/>    
     
-    <menuitem id="submenu_action_account_invoice_report_all_vaping" name="Invoice Analysis" action="action_account_invoice_report_all_vaping" 
+    <menuitem id="submenu_action_account_invoice_report_all_vaping" name="Wholesale Invoice Analysis" action="action_account_invoice_report_all_vaping" 
     parent="heading_vaping_reports_main_menu" sequence="1"/>        
 	
 </odoo>

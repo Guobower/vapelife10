@@ -21,6 +21,7 @@ A seprate tab is created for displaying reports in one place.Follwing Reports ha
     'data': [
         'views/reports.xml',
         'views/account_treasury_report_view.xml',
+        'views/account_move_report.xml',
     ],
     'demo': [
     ],
