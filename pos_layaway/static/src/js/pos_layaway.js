@@ -5,6 +5,7 @@ odoo.define("pos_layaway.pos_layaway",function(require){
 	var screen = require('point_of_sale.screens');
 	var _t = core._t;
 	var Model = require('web.DataModel');
+	var pos_old_order_widget = require("pos_order.order_reprinting_pos")
 	
 	var add_layaway_button = screen.ActionButtonWidget.extend({
 	    template:"AddLayAwayButton",
@@ -101,4 +102,45 @@ odoo.define("pos_layaway.pos_layaway",function(require){
             return true
         },
     });	
+	
+	
+	pos_old_order_widget.OldOrdersWidget.include({
+		render_list:function(orders){
+			var self = this;
+			this._super(orders);
+	        this.$('.order-list-contents').delegate('.layaway-button','click',function(event){
+        		var order_id = $(this).data('id');
+        		self.gui.show_popup('number',{
+		            'title':_t('Payment Amount'),
+		            'confirm':function(value){
+		            	var input = parseFloat(value) || 0.00;
+		            	if (input == 0){
+		            		return
+		            	}
+		        		self.gui.show_popup('selection',{
+		        			'title':_t('Select Payment Mode'),
+		        			'list':_.map(self.pos.cashregisters,function(register){
+		        				return {label:register.journal_id[1],item:register.journal_id[0]}
+		        			}),
+		        			'confirm':function(item){
+	        					var posModel = new Model('pos.order')
+	        					posModel.call('make_layaway_payment',[order_id,input,item]).then(function(res){
+	        						var order = self.get_order_by_id(order_id)
+	        						order.state = res.state;
+	        						order.balance = res.balance;
+	        						order.amount_paid = res.amount_paid;
+	        						self.order_cache.clear_node(order.id)
+	        						self.render_list(self.pos.pos_orders);
+		        					self.gui.show_popup('alert',{
+		        						'title':"Payment Registration",
+		        						'body':res.msg,
+		        					})	        						
+	        					})
+		        			}
+		        		})
+	            	}
+        		});
+        })			
+		},
+	})
 });

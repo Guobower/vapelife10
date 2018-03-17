@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-extend="OrderLine">
+        <t t-jquery="tr.order-line" t-operation="append">
+        		<td class="return-product" t-att-data-id='order.id'><span class = "button" ><i class="fa fa-undo fa-2x" aria-hidden="true"></i></span></td>
+        </t>
+    </t>
+    <t t-extend="OldOrdersWidget">
+  		<t t-jquery="table.client-list>thead>tr" t-operation="append">
+ 			<th></th>
+  		</t>
+    </t>
+</templates>   

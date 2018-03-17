@@ -14,7 +14,7 @@
 * Added product attribute and product attribute value field to product category
     """,
     'website': 'https://www.odoo.com/page/crm',
-    'depends': ['base','sales_team','sale','product'],
+    'depends': ['base','sales_team','sale','product','point_of_sale'],
     'data': [
         'views/res_partner.xml',
         'views/product_attribute_views.xml',
@@ -27,6 +27,7 @@
     'demo': [
     ],
     'css': [],
+    'qweb': ['static/src/xml/*.xml'],
     'installable': True,
     'auto_install': False,
     'application': True,

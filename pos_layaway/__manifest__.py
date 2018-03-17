@@ -13,7 +13,7 @@
 
     """,
     'website': 'https://www.odoo.com',
-    'depends': ['base','point_of_sale','stock_reserve'],
+    'depends': ['base','point_of_sale','stock_reserve','pos_order'],
     'data': [
         'views/pos_layaway.xml',
         'views/pos_order_view.xml',

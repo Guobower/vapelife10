@@ -1,4 +1,4 @@
-odoo.define('order_reprinting_pos',function(require) {
+odoo.define('pos_order.order_reprinting_pos',function(require) {
 "use strict";
 
 var gui = require('point_of_sale.gui');
@@ -11,12 +11,22 @@ var pos_screens = require('point_of_sale.screens');
 var Model = require('web.DataModel');
 var QWeb = core.qweb;
 var _t = core._t;
+var exports = {}
 
-var _LIST_FIELDS = ['id', 'name', 'session_id', 'pos_reference', 'partner_id', 'amount_total', 'amount_tax','note','state','amount_paid','date_order','balance']
+var _LIST_FIELDS = [
+	'id', 'name', 'session_id', 'pos_reference', 'partner_id',
+	'amount_total', 'amount_tax','note','state',
+	'amount_paid','date_order','balance'
+	]
 
 models.load_models({
             model: 'pos.order',
             fields: _LIST_FIELDS,
+            domain:function(self){
+            		var d = new Date();
+            		d.setDate(d.getDate() - 60) // set date to two months back
+            		return [['date_order','>=',d.toISOString()]]
+            },
             loaded: function (self, pos_orders) {
                 var new_order_list = [];
                 for (var i in pos_orders){
@@ -29,7 +39,7 @@ models.load_models({
 var DomCache = core.Class.extend({
         init: function(options){
             options = options || {};
-            this.max_size = options.max_size || 2000;
+            this.max_size = options.max_size;
 
             this.cache = {};
             this.access_time = {};
@@ -76,6 +86,7 @@ var DomCache = core.Class.extend({
             return cached;
         },
     });
+
 chrome.OrderSelectorWidget.include({
     renderElement: function(){
         var self = this;
@@ -175,11 +186,14 @@ var OldOrdersWidget = pos_screens.ScreenWidget.extend({
         this.new_client = null;
     },
     perform_search: function(query, associate_result,searchbox){
+    		var self = this;
         var new_orders;
         if(query){
             new_orders = this.search_order(query,searchbox);
-
-            this.render_list(new_orders);
+            $.when(new_orders).then(function(o){
+            		self.render_list(o)
+            })
+            
         }else{
             var orders = this.pos.pos_orders;
             this.render_list(orders);
@@ -187,6 +201,7 @@ var OldOrdersWidget = pos_screens.ScreenWidget.extend({
     },
     search_order: function(query,searchbox){
         var self = this;
+        var org_query = query;
         try {
             query = query.replace(/[\[\]\(\)\+\*\?\.\-\!\&\^\$\|\~\_\{\}\:\,\\\/]/g,'.');
             query = query.replace(' ','.+');
@@ -195,7 +210,7 @@ var OldOrdersWidget = pos_screens.ScreenWidget.extend({
             return [];
         }
         var results = [];
-        for(var i = 0; i < Math.min(self.pos.pos_orders.length,1000); i++){
+        for(var i = self.pos.pos_orders.length; i > 0; i--) {
         		if (searchbox == "pos_reference"){
         			var r = re.exec(this.order_string);
         		}else{
@@ -209,7 +224,20 @@ var OldOrdersWidget = pos_screens.ScreenWidget.extend({
                 break;
             }
         }
-        return results;
+        // If in case it is an order older than a month and needs to be loaded from backend
+        if (results.length == 0){
+	    	    console.log("Made a call to backend")
+        		return new Model('pos.order').call('search_order',[org_query]).then(function(res){
+        			var or = [];
+	    	    		_.each(res,function(val,index){
+	    	    			self.pos.pos_orders[val.id] = val
+	    	    			or[val.id] = val
+	    	    		})
+	    	    		return or
+	    	    })        	
+        }else{
+        		return $.Deferred().resolve(results)
+        }
     },
     // returns the order with the id provided
     get_order_by_id: function (id) {
@@ -223,50 +251,17 @@ var OldOrdersWidget = pos_screens.ScreenWidget.extend({
     },
     render_list: function(orders){
         var self = this;
-        for(var i = 0, len = Math.min(orders.length,1000); i < len; i++) {
+        for(var i = orders.length-1; i >= 0; i--) {
             if (orders[i]) {
                 var order = orders[i];
                 self.order_string += i + ':' + order.pos_reference + '\n';
                 self.partner_string += i + ':' + ((order.partner_id)?order.partner_id[1]:"-") + '\n';
             }
         }
-        this.$('.order-list-contents').delegate('.layaway-button','click',function(event){
-        		var order_id = $(this).data('id');
-        		self.gui.show_popup('number',{
-		            'title':_t('Payment Amount'),
-		            'confirm':function(value){
-		            	var input = parseFloat(value) || 0.00;
-		            	if (input == 0){
-		            		return
-		            	}
-		        		self.gui.show_popup('selection',{
-		        			'title':_t('Select Payment Mode'),
-		        			'list':_.map(self.pos.cashregisters,function(register){
-		        				return {label:register.journal_id[1],item:register.journal_id[0]}
-		        			}),
-		        			'confirm':function(item){
-	        					var posModel = new Model('pos.order')
-	        					posModel.call('make_layaway_payment',[order_id,input,item]).then(function(res){
-	        						var order = self.get_order_by_id(order_id)
-	        						order.state = res.state;
-	        						order.balance = res.balance;
-	        						order.amount_paid = res.amount_paid;
-	        						self.order_cache.clear_node(order.id)
-	        						self.render_list(self.pos.pos_orders);
-		        					self.gui.show_popup('alert',{
-		        						'title':"Payment Registration",
-		        						'body':res.msg,
-		        					})	        						
-	        					})
-		        			}
-		        		})
-	            	}
-        		});
-        })
         this.$('.order-list-contents').delegate('.print-button','click',function(event){
             var pos_ref = $(this).data('id');
             var order_new = null;
-            for(var i = 0, len = Math.min(orders.length,1000); i < len; i++) {
+            for(var i = orders.length - 1; i >=0 ;i--) {
                 if (orders[i] && orders[i].pos_reference == pos_ref) {
                     order_new = orders[i];
                 }
@@ -296,7 +291,7 @@ var OldOrdersWidget = pos_screens.ScreenWidget.extend({
         var contents = this.$el[0].querySelector('.order-list-contents');
         if (contents){
             contents.innerHTML = "";
-            for(var i = 0, len = Math.min(orders.length,1000); i < len; i++) {
+            for(var i = orders.length-1; i >= 0; i--) {
                 if (orders[i]) {
                     var order = orders[i];
 
@@ -323,7 +318,7 @@ var OldOrdersWidget = pos_screens.ScreenWidget.extend({
         this._super();
     },
 });
+exports.OldOrdersWidget = OldOrdersWidget;
 gui.define_screen({name:'OldOrdersWidget', widget: OldOrdersWidget});
-
-
+return exports
 });
