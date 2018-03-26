@@ -14,6 +14,9 @@
     'depends': ['base','point_of_sale'],
     'data': [
         'views/pos_order.xml',
+        'data/report_paperformat.xml',
+        'report/receipt_report.xml',
+        'views/report.xml'
     ],
     'demo': [
     ],

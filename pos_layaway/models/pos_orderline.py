@@ -31,10 +31,10 @@ class PosOrderLines(models.Model):
         return order_id.ids
 
     @api.model
-    def get_orderlines(self, ref):
+    def get_orderlines(self, id):
         discount = 0
         result = []
-        order_id = self.search([('pos_reference', '=', ref)], limit=1)
+        order_id = self.search([('id', '=', id)], limit=1)
         lines = self.env['pos.order.line'].search([('order_id', '=', order_id.id)])
         payments = self.env['account.bank.statement.line'].search([('pos_statement_id', '=', order_id.id)])
         payment_lines = []
@@ -54,6 +54,8 @@ class PosOrderLines(models.Model):
                 'qty': line.qty,
                 'price_unit': line.price_unit,
                 'discount': line.discount,
+                'subtotal':line.price_subtotal,
+                'productId':line.product_id.id,
                 }
             discount += (line.price_unit * line.qty * line.discount) / 100
             result.append(new_vals)

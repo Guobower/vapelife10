@@ -13,6 +13,8 @@
     'website': 'https://www.odoo.com',
     'depends': ['base','point_of_sale','pos_order'],
     'data': [
+        'views/point_of_sale_return.xml',
+        'views/pos_order_view.xml'
     ],
     'demo': [
     ],

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report
+            id="pos_orders"
+            model="pos.order"
+            string="Receipts"
+            report_type="qweb-pdf"
+            name="pos_order.receipt_report"
+            file="pos_order.receipt_report"
+        />
+    <record id="pos_orders" model="ir.actions.report.xml">
+        <field name="paperformat_id" ref="pos_order.paperformat_posreceipt"/>
+    </record>
+
+</odoo>

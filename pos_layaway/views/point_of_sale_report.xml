@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <report
-            id="pos_orders"
-            model="pos.order"
-            string="Receipts"
-            report_type="qweb-pdf"
-            name="pos_layaway.receipt_report"
-            file="pos_layaway.receipt_report"
-        />
-    <record id="pos_orders" model="ir.actions.report.xml">
-        <field name="paperformat_id" ref="pos_layaway.paperformat_posreceipt"/>
-    </record>
-
     <record id="view_pos_order_form_inherit" model="ir.ui.view">
        <field name="name">view_pos_order_updated</field>
        <field name="model">pos.order</field>

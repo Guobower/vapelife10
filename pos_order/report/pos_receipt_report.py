@@ -26,7 +26,7 @@ from odoo import api, models
 
 
 class PosReceiptReport(models.AbstractModel):
-    _name = 'report.pos_layaway.receipt_report'
+    _name = 'report.pos_order.receipt_report'
 
     def _get_journal_amt(self, order_id):
         data={}
@@ -45,4 +45,4 @@ class PosReceiptReport(models.AbstractModel):
             "docs": self.env['pos.order'].sudo().browse(docids),
             'get_journal_amt': self._get_journal_amt,
          }
-        return Report.sudo().render('pos_layaway.receipt_report', docargs)
+        return Report.sudo().render('pos_order.receipt_report', docargs)

@@ -25,7 +25,7 @@ models.load_models({
             domain:function(self){
             		var d = new Date();
             		d.setDate(d.getDate() - 60) // set date to two months back
-            		return [['date_order','>=',d.toISOString()]]
+            		return [['date_order','>=',d.toISOString()],['is_return','!=',true]]
             },
             loaded: function (self, pos_orders) {
                 var new_order_list = [];
@@ -226,7 +226,6 @@ var OldOrdersWidget = pos_screens.ScreenWidget.extend({
         }
         // If in case it is an order older than a month and needs to be loaded from backend
         if (results.length == 0){
-	    	    console.log("Made a call to backend")
         		return new Model('pos.order').call('search_order',[org_query]).then(function(res){
         			var or = [];
 	    	    		_.each(res,function(val,index){
@@ -271,7 +270,7 @@ var OldOrdersWidget = pos_screens.ScreenWidget.extend({
             var lines = [];
             var payments = [];
             var discount = 0;
-            new Model('pos.order').call('get_orderlines',[order_new.pos_reference]).then(function(result){
+            new Model('pos.order').call('get_orderlines',[order_new.id]).then(function(result){
                 lines = result[0];
                 payments = result[2];
                 discount = result[1];

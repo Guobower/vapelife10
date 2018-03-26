@@ -8,7 +8,6 @@
     'sequence': 15,
     'summary': 'POS Layaway',
     'description': """
-
         This module is dependent of order_reprinting_pos. It is used to add layaway functionality to POS
 
     """,
@@ -17,8 +16,6 @@
     'data': [
         'views/pos_layaway.xml',
         'views/pos_order_view.xml',
-        'report/receipt_report.xml',
-        'data/report_paperformat.xml',
         'views/point_of_sale_report.xml',
     ],
     'demo': [

@@ -9,6 +9,7 @@
     'summary': 'Point of Sale Extension',
     'description': """
         * Changed Payment Numpad Template in Point Of Sale 
+        * Added POS Order Receipt report in pos.order
     """,
     'website': 'https://www.odoo.com',
     'depends': ['base','point_of_sale'],
