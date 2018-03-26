@@ -103,6 +103,7 @@ odoo.define("point_of_sale_return.point_of_sale_return",function(require){
 	    			                'date_order': new Date(),
 	    			                'pos_reference': self.data.order.pos_reference,
 	    			                'lines':return_lines,
+	    			                'partner_id':(self.data.order.partner_id) ? self.data.order.partner_id[0]:false,
     				    		}
 	    		    		
 	    		    		new Model('pos.order').call('create_return_order',[order,item]).done(function(report){
@@ -124,8 +125,14 @@ odoo.define("point_of_sale_return.point_of_sale_return",function(require){
 		show:function(options){
 			var self = this;
 			this._super(options);
-			console.log(options)
 			this.data = options.data;
+			if (this.data.order.state == "layaway"){
+                self.gui.show_popup('error',{
+                    'title':_t("Error"),
+                    'body':_t('Layaway Order  cannot be returned')
+                });	        					
+                return
+			};
 			this.lines = [];
 			this.total_node = $(QWeb.render('PointOfSaleReturnTotalLine', {name: 'Total Return Amt'}));
 			_.each(options.data.lines,function(l,i){
