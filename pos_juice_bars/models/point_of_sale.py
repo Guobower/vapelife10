@@ -78,7 +78,7 @@ class pos_order(models.Model):
             bar_ids = eval(self.env['ir.config_parameter'].get_param('pos_juice_bars.juice_bars_ids'))
             for line in order.lines.filtered(
                     lambda l: l.product_id.type in ['product', 'consu'] and not float_is_zero(l.qty,
-                                                                                              precision_digits=l.product_id.uom_id.rounding)):
+                                                                                           precision_digits=l.product_id.uom_id.rounding)):
                 moves |= Move.create({
                     'name': line.name,
                     'product_uom': line.product_id.uom_id.id,
@@ -91,7 +91,7 @@ class pos_order(models.Model):
                     'location_dest_id': destination_id if line.qty >= 0 else return_pick_type != picking_type and return_pick_type.default_location_dest_id.id or location_id,
                 })
                 # Editted by Shivam Goyal
-                if line.product_id.id in bar_ids:
+                if (line.product_id.id in bar_ids) and line.qty > 0:
                     # This means we first have a manufacture a Juice Bar and then transfer it to customer location
 #                     for j in line.mixture_line_id:
 #                         vol_attribute_value = line.product_id.attribute_value_ids.filtered(lambda attr: attr.attribute_id.nature == 'vol')
@@ -136,7 +136,6 @@ class pos_order(models.Model):
                                 # The attribute value is in ml and 350ml bottle is in Juice Bar units and 1 Juice Bar Unit is equal to 350ml  
                                 #Example Product Attribute Value -> Actual value = 10ml and line.product_id.uom_id.factor_inv = 350ml
                                 qty = vol_attribute_value.actual_value * j.mix * line.qty / float(j.product_id.uom_id.factor_inv)
-                                print "==========qty",qty
                                 data = {
                                     'sequence': index,
                                     'name': order.name,
@@ -168,7 +167,6 @@ class pos_order(models.Model):
                             mo_id.sudo().button_mark_done()
             # prefer associating the regular order picking, not the return
             order.write({'picking_id': order_picking.id or return_picking.id})
-
             if return_picking:
                 order._force_picking_done(return_picking)
             if order_picking:
