@@ -16,7 +16,8 @@
         'views/pos_order.xml',
         'data/report_paperformat.xml',
         'report/receipt_report.xml',
-        'views/report.xml'
+        'views/report.xml',
+        'views/pos_order_view.xml'
     ],
     'demo': [
     ],
