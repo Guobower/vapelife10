@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+        <record id="pos_order_tree_view_return" model="ir.ui.view">
+            <field name="name">product.order</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+            <field name="arch" type="xml">
+            		<xpath expr = "/tree" position="attributes">
+            			<attribute name = "decoration-danger">is_return==True</attribute>
+            		</xpath> <!--  Changing color of the record in tree view which are return orders -->
+            		<xpath expr = "/tree" position = "inside">
+            			<field name = "is_return" invisible="1" />
+            		</xpath>            		
+            </field>
+        </record>	
+        <!-- Create a return order filter -->
+        <record id="pos_order_search_view_return" model="ir.ui.view">
+            <field name="name">pos.order</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_filter"/> 
+            <field name="arch" type="xml">
+            		<xpath expr = "/search" position="inside">
+            			<filter string="Return Order" domain="[('is_return','=',True)]"/>
+            		</xpath>
+            </field>       
+        </record>        
+        
+        <record id="pos_order_form_view_return" model="ir.ui.view">
+            <field name="name">pos.order</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+            <field name="arch" type="xml">
+            		<xpath expr="//field[@name='partner_id']" position="after">
+            			<field name = "is_return" readonly="1"/>
+            		</xpath>    
+            </field>
+        </record>    	
+	</data>
+</odoo>
