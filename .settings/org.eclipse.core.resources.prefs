@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//point_of_sale_extended/__manifest__.py=utf-8
 encoding//point_of_sale_return/models/pos_order.py=utf-8
+encoding//pos_franchise/__manifest__.py=utf-8
 encoding//pos_juice_bars/__manifest__.py=utf-8
 encoding//pos_notes/__manifest__.py=utf-8
 encoding//pos_order/__manifest__.py=utf-8

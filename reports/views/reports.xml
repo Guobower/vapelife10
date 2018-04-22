@@ -3,6 +3,7 @@
 	<menuitem name="Dashboard"
             id="vaping_reports_main_menu"
             web_icon="reports,static/description/icon.png" sequence="0"/>
+            
 	<menuitem name="Reports"
             id="heading_vaping_reports_main_menu"
             parent = "vaping_reports_main_menu"

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+      <record id="pos_franchise_pos_config_form" model="ir.ui.view">
+          <field name="name">pos.config</field>
+          <field name="model">pos.config</field>
+          <field name="inherit_id" ref="point_of_sale.view_pos_config_form"/>
+          <field name="arch" type="xml">
+			<xpath expr = "/form/sheet/group/field[@name='active']" position = "after">
+				<field name = "default_user_id" />
+			</xpath>
+          </field>
+      </record>	
+</odoo>

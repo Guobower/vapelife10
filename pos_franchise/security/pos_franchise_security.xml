@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_pos_franchise_user" model="res.groups">
+        <field name="name">Franchise User</field>
+        <field name="category_id" ref="base.module_category_point_of_sale"/>
+    </record>
+    
+   <record id="rule_pos_order_franchise_user" model="ir.rule">
+        <field name="name">Point Of Sale Franchise Order User</field>
+        <field name="model_id" ref="point_of_sale.model_pos_order" />
+        <field name="groups" eval="[(4, ref('group_pos_franchise_user'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+   <record id="rule_hr_employee_franchise_user" model="ir.rule">
+        <field name="name">Point Of Sale Franchise Employee User</field>
+        <field name="model_id" ref="hr.model_hr_employee" />
+        <field name="groups" eval="[(4, ref('group_pos_franchise_user'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>        
+    <record id="rule_pos_bank_statement_line_franchise_user" model="ir.rule">
+        <field name="name">Point Of Sale Bank Statement Line POS Franchise User</field>
+        <field name="model_id" ref="account.model_account_bank_statement_line" />
+        <field name="groups" eval="[(4, ref('group_pos_franchise_user'))]"/>
+        <field name="domain_force">[('statement_id.pos_session_id', '!=', False)]</field>
+    </record>   
+    <record id="rule_pos_bank_statement_franchise_user" model="ir.rule">
+        <field name="name">Point Of Sale Bank Statement POS Franchise User</field>
+        <field name="model_id" ref="account.model_account_bank_statement" />
+        <field name="groups" eval="[(4, ref('group_pos_franchise_user'))]"/>
+        <field name="domain_force">[('pos_session_id', '!=', False)]</field>
+    </record>  
+   <record id="rule_pos_config_franchise_user" model="ir.rule">
+        <field name="name">Point Of Sale Franchise POS Config</field>
+        <field name="model_id" ref="point_of_sale.model_pos_config" />
+        <field name="groups" eval="[(4, ref('group_pos_franchise_user'))]"/>
+        <field name="domain_force">[('default_user_id', '=', user.id)]</field>
+    </record> 
+    <record id="rule_pos_session_franchise_user" model="ir.rule">
+        <field name="name">Point Of Sale Session Franchise User</field>
+        <field name="model_id" ref="point_of_sale.model_pos_session" />
+        <field name="groups" eval="[(4, ref('group_pos_franchise_user'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>                      
+    <record id="rule_res_partner_franchise_user" model="ir.rule">
+        <field name="name">Point Of Sale Partner Franchise User</field>
+        <field name="model_id" ref="base.model_res_partner" />
+        <field name="groups" eval="[(4, ref('group_pos_franchise_user'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>                          
+    
+</odoo>

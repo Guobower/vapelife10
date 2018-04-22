@@ -1,0 +1,3 @@
+import pos_config
+import pos_session
+import res_partner
