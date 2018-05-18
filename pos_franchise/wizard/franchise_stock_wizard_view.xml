@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="franchise_stock_wizard_user_form" model="ir.ui.view">
+	    <field name="name">Franchise Stock Wizard User</field>
+	    <field name="model">franchise.stock.wizard.user</field>
+	    <field name="arch" type="xml">
+	        <form string="Select Location">
+	            <group>
+	            		<field name = "location_user_ids" options="{'no_create': True}" 
+	            		groups = "pos_franchise.group_pos_franchise_user" widget="many2many_checkboxes" nolabel="1" />
+	            </group>
+	            <group>
+	            		<field name = "location_manager_ids" options="{'no_create': True}" 
+	            		groups = "pos_franchise.group_pos_franchise_manager"
+	            		widget="many2many_checkboxes" nolabel="1" />	            
+	            </group>
+	            <footer>
+                    <button name="display_stock" string="Display Stock" type="object" class="btn-primary"/>
+	            		<button string="Cancel" class="btn-default" special="cancel"/>
+	            </footer>	
+            </form>
+        </field>
+    </record>
+    <record id="franchise_stock_wizard_user_action" model="ir.actions.act_window">
+        <field name="name">Select Location</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">franchise.stock.wizard.user</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="groups_id" eval="[(4,ref('group_pos_franchise_user'))]"/>
+    </record> 
+        <menuitem 
+	    id="franchise_stock_wizard_user_menu" 
+	    name = "Stock"
+	    action = "franchise_stock_wizard_user_action" 
+	    parent="pos_franchise_sub_menu" sequence="3"
+	    groups = "group_pos_franchise_user" 
+    />	   
+</odoo>

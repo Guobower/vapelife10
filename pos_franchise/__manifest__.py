@@ -13,12 +13,14 @@
 
 """,
     'website': 'https://www.odoo.com/page/crm',
-    'depends': ['base','point_of_sale'],
+    'depends': ['base','point_of_sale','stock'],
     'data': [
         'security/pos_franchise_security.xml',
         'security/ir.model.access.csv',        
         'views/pos_config.xml',
         'views/pos_franchise.xml',
+        'views/res_users.xml',
+        'wizard/franchise_stock_wizard_view.xml'
     ],
     'demo': [
     ],

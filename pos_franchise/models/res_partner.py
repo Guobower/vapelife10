@@ -3,6 +3,11 @@ from openerp import models, fields, api, _,SUPERUSER_ID
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    user_id = fields.Many2one('res.users', 
+       track_visibility='onchange',
+      string='Salesperson',default=lambda self:self.env.user,
+      help='The internal user that is in charge of communicating with this contact if any.')
+
     @api.model
     def create_from_ui(self, partner):
         """ create or modify a partner from the point of sale ui.

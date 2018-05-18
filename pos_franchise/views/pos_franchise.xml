@@ -93,14 +93,14 @@
         <field name="res_model">res.partner</field>
         <field name="view_type">form</field>
         <field name="view_mode">kanban,tree,form,graph</field>
-        <field name="context">{'default_customer': True,'search_default_customer':1,'default_user_id':uid}</field>
+        <field name="context">{'default_customer': True,'search_default_customer':1}</field>
     </record>
+
     <menuitem 
-    id="menu_franchise_partners" 
-    action = "act_res_partner_pos_franchise" 
-    parent="pos_franchise_sub_menu" sequence="3"
-    groups = "group_pos_franchise_user" 
+	    id="menu_franchise_partners" 
+	    action = "act_res_partner_pos_franchise" 
+	    parent="pos_franchise_sub_menu" sequence="3"
+	    groups = "group_pos_franchise_user,group_pos_franchise_manager" 
     />	
-	 
-       
+    
 </odoo>
